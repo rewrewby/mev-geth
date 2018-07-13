@@ -22,6 +22,7 @@ import (
 	"github.com/expanse-org/go-expanse/params"
 )
 
+// Gas costs
 const (
 	GasQuickStep   uint64 = 2
 	GasFastestStep uint64 = 3

@@ -134,8 +134,8 @@ Fatal: could not decrypt key with given passphrase
 
 func TestUnlockFlag(t *testing.T) {
 	datadir := tmpDatadirWithKeystore(t)
-	gexp := runGeth(t,
-		"--datadir", datadir, "--nat", "none", "--nodiscover", "--dev",
+	geth := runGeth(t,
+		"--datadir", datadir, "--nat", "none", "--nodiscover", "--maxpeers", "0", "--port", "0",
 		"--unlock", "f466859ead1932d743d622cb74fc058882e8648a",
 		"js", "testdata/empty.js")
 	gexp.Expect(`
@@ -158,8 +158,8 @@ Passphrase: {{.InputLine "foobar"}}
 
 func TestUnlockFlagWrongPassword(t *testing.T) {
 	datadir := tmpDatadirWithKeystore(t)
-	gexp := runGeth(t,
-		"--datadir", datadir, "--nat", "none", "--nodiscover", "--dev",
+	geth := runGeth(t,
+		"--datadir", datadir, "--nat", "none", "--nodiscover", "--maxpeers", "0", "--port", "0",
 		"--unlock", "f466859ead1932d743d622cb74fc058882e8648a")
 	defer gexp.ExpectExit()
 	gexp.Expect(`
@@ -177,8 +177,8 @@ Fatal: Failed to unlock account f466859ead1932d743d622cb74fc058882e8648a (could 
 // https://github.com/expanse-org/go-expanse/issues/1785
 func TestUnlockFlagMultiIndex(t *testing.T) {
 	datadir := tmpDatadirWithKeystore(t)
-	gexp := runGeth(t,
-		"--datadir", datadir, "--nat", "none", "--nodiscover", "--dev",
+	geth := runGeth(t,
+		"--datadir", datadir, "--nat", "none", "--nodiscover", "--maxpeers", "0", "--port", "0",
 		"--unlock", "0,2",
 		"js", "testdata/empty.js")
 	gexp.Expect(`
@@ -205,8 +205,8 @@ Passphrase: {{.InputLine "foobar"}}
 
 func TestUnlockFlagPasswordFile(t *testing.T) {
 	datadir := tmpDatadirWithKeystore(t)
-	gexp := runGeth(t,
-		"--datadir", datadir, "--nat", "none", "--nodiscover", "--dev",
+	geth := runGeth(t,
+		"--datadir", datadir, "--nat", "none", "--nodiscover", "--maxpeers", "0", "--port", "0",
 		"--password", "testdata/passwords.txt", "--unlock", "0,2",
 		"js", "testdata/empty.js")
 	gexp.ExpectExit()
@@ -225,8 +225,8 @@ func TestUnlockFlagPasswordFile(t *testing.T) {
 
 func TestUnlockFlagPasswordFileWrongPassword(t *testing.T) {
 	datadir := tmpDatadirWithKeystore(t)
-	gexp := runGeth(t,
-		"--datadir", datadir, "--nat", "none", "--nodiscover", "--dev",
+	geth := runGeth(t,
+		"--datadir", datadir, "--nat", "none", "--nodiscover", "--maxpeers", "0", "--port", "0",
 		"--password", "testdata/wrong-passwords.txt", "--unlock", "0,2")
 	defer gexp.ExpectExit()
 	gexp.Expect(`
@@ -236,8 +236,8 @@ Fatal: Failed to unlock account 0 (could not decrypt key with given passphrase)
 
 func TestUnlockFlagAmbiguous(t *testing.T) {
 	store := filepath.Join("..", "..", "accounts", "keystore", "testdata", "dupes")
-	gexp := runGeth(t,
-		"--keystore", store, "--nat", "none", "--nodiscover", "--dev",
+	geth := runGeth(t,
+		"--keystore", store, "--nat", "none", "--nodiscover", "--maxpeers", "0", "--port", "0",
 		"--unlock", "f466859ead1932d743d622cb74fc058882e8648a",
 		"js", "testdata/empty.js")
 	defer gexp.ExpectExit()
@@ -274,8 +274,8 @@ In order to avoid this warning, you need to remove the following duplicate key f
 
 func TestUnlockFlagAmbiguousWrongPassword(t *testing.T) {
 	store := filepath.Join("..", "..", "accounts", "keystore", "testdata", "dupes")
-	gexp := runGeth(t,
-		"--keystore", store, "--nat", "none", "--nodiscover", "--dev",
+	geth := runGeth(t,
+		"--keystore", store, "--nat", "none", "--nodiscover", "--maxpeers", "0", "--port", "0",
 		"--unlock", "f466859ead1932d743d622cb74fc058882e8648a")
 	defer gexp.ExpectExit()
 
