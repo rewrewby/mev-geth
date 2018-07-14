@@ -35,7 +35,7 @@ var (
 		ChainID:        big.NewInt(2),
 		HomesteadBlock: big.NewInt(200000),
 		DAOForkBlock:   nil,
-		DAOForkSupport: true,
+		DAOForkSupport: false,
 		EIP150Block:    big.NewInt(200000),
 		EIP150Hash:     common.HexToHash("0xf387cbb657921609e7ceb59ce2163b1a5d7241eb0fdebdf605b24841cea91003"),
 		EIP155Block:    big.NewInt(600000),
