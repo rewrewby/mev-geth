@@ -25,6 +25,8 @@ import (
 	"strings"
 	"testing"
 
+	"reflect"
+
 	"github.com/expanse-org/go-expanse/common"
 	"github.com/expanse-org/go-expanse/crypto"
 )

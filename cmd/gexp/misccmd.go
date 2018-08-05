@@ -41,8 +41,7 @@ var (
 The makecache command generates an ethash cache in <outputDir>.
 
 This command exists to support the system testing project.
-Regular users do not need to execute it.
-`,
+Regular users do not need to execute it.`,
 	}
 	makedagCommand = cli.Command{
 		Action:    utils.MigrateFlags(makedag),
@@ -54,8 +53,7 @@ Regular users do not need to execute it.
 The makedag command generates an ethash DAG in <outputDir>.
 
 This command exists to support the system testing project.
-Regular users do not need to execute it.
-`,
+Regular users do not need to execute it.`,
 	}
 	versionCommand = cli.Command{
 		Action:    utils.MigrateFlags(version),
@@ -134,7 +132,6 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with gexp. If not, see <http://www.gnu.org/licenses/>.
-`)
+along with gexp. If not, see <http://www.gnu.org/licenses/>.`)
 	return nil
 }
