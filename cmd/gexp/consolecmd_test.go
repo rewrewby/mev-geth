@@ -31,7 +31,7 @@ import (
 )
 
 const (
-	ipcAPIs  = "admin:1.0 debug:1.0 eth:1.0 miner:1.0 net:1.0 personal:1.0 rpc:1.0 shh:1.0 txpool:1.0 web3:1.0"
+	ipcAPIs  = "admin:1.0 debug:1.0 eth:1.0 exp:1.0 miner:1.0 net:1.0 personal:1.0 rpc:1.0 shh:1.0 txpool:1.0 web3:1.0"
 	httpAPIs = "eth:1.0 net:1.0 rpc:1.0 web3:1.0"
 )
 
@@ -56,7 +56,7 @@ func TestConsoleWelcome(t *testing.T) {
 
 	// Verify the actual welcome message to the required template
 	geth.Expect(`
-Welcome to the gexp JavaScript console!
+Welcome to the Gexp JavaScript console!
 
 instance: Gexp/v{{gethver}}/{{goos}}-{{goarch}}/{{gover}}
 coinbase: {{.Etherbase}}
@@ -142,8 +142,9 @@ func testAttachWelcome(t *testing.T, geth *testgeth, endpoint, apis string) {
 
 	// Verify the actual welcome message to the required template
 	attach.Expect(`
-Welcome to the gexp JavaScript console!
-instance: gexp/v{{gethver}}/{{goos}}-{{goarch}}/{{gover}}
+Welcome to the Gexp JavaScript console!
+
+instance: Gexp/v{{gethver}}/{{goos}}-{{goarch}}/{{gover}}
 coinbase: {{etherbase}}
 at block: 0 ({{niltime}}){{if ipc}}
  datadir: {{datadir}}{{end}}
