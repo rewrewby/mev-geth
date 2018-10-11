@@ -38,11 +38,19 @@ import (
 
 // Ethash proof-of-work protocol constants.
 var (
-	FrontierBlockReward       = big.NewInt(5e+18) // Block reward in wei for successfully mining a block
-	ByzantiumBlockReward      = big.NewInt(3e+18) // Block reward in wei for successfully mining a block upward from Byzantium
-	ConstantinopleBlockReward = big.NewInt(2e+18) // Block reward in wei for successfully mining a block upward from Constantinople
-	maxUncles                 = 2                 // Maximum number of uncles allowed in a single block
-	allowedFutureBlockTime    = 15 * time.Second  // Max time from current time allowed for blocks, before they're considered future blocks
+	FrontierBlockReward       = big.NewInt(5e+18)                                    // Block reward in wei for successfully mining a block
+	ByzantiumBlockReward      = big.NewInt(3e+18)                                    // Block reward in wei for successfully mining a block upward from Byzantium
+	ConstantinopleBlockReward = big.NewInt(2e+18)                                    // Block reward in wei for successfully mining a block upward from Constantinople
+	CLOMinerReward            = new(big.Int).Mul(big.NewInt(420), big.NewInt(1e+18)) // Block reward in wei for successfully mining a block upward for Callisto Network
+	CLOTreasuryReward         = new(big.Int).Mul(big.NewInt(120), big.NewInt(1e+18)) // Block reward in wei for successfully mining a block upward for Callisto Network
+	CLOStakeReward            = new(big.Int).Mul(big.NewInt(60), big.NewInt(1e+18))  // Block reward in wei for successfully mining a block upward for Callisto Network
+	CLOHF1TreasuryReward      = new(big.Int).Mul(big.NewInt(60), big.NewInt(1e+18))  // Block reward in wei for successfully mining a block upward for Callisto Network
+	CLOHF1StakeReward         = new(big.Int).Mul(big.NewInt(120), big.NewInt(1e+18)) // Block reward in wei for successfully mining a block upward for Callisto Network
+	CLOTreasuryAddress        = common.HexToAddress("0x74682Fc32007aF0b6118F259cBe7bCCC21641600")
+	CLOStakeAddress           = common.HexToAddress("0x3c06f218Ce6dD8E2c535a8925A2eDF81674984D9")
+	CLOHF1StakeAddress        = common.HexToAddress("0x3c06f218Ce6dD8E2c535a8925A2eDF81674984D9")
+	maxUncles                 = 2                // Maximum number of uncles allowed in a single block
+	allowedFutureBlockTime    = 15 * time.Second // Max time from current time allowed for blocks, before they're considered future blocks
 
 	// calcDifficultyConstantinople is the difficulty adjustment algorithm for Constantinople.
 	// It returns the difficulty that a new block should have when created at time given the
@@ -546,9 +554,15 @@ func (ethash *Ethash) verifySeal(chain consensus.ChainReader, header *types.Head
 	return nil
 }
 
+var accumulateRewards func(config *params.ChainConfig, state *state.StateDB, header *types.Header, uncles []*types.Header) = defaultAccumulateRewards
+
 // Prepare implements consensus.Engine, initializing the difficulty field of a
 // header to conform to the ethash protocol. The changes are done inline.
 func (ethash *Ethash) Prepare(chain consensus.ChainReader, header *types.Header) error {
+	if chain.GetHeaderByNumber(0).Hash() == params.CallistoGenesisHash {
+		accumulateRewards = callistoAccumulateRewards
+	}
+
 	parent := chain.GetHeader(header.ParentHash, header.Number.Uint64()-1)
 	if parent == nil {
 		return consensus.ErrUnknownAncestor
@@ -600,7 +614,7 @@ var (
 // AccumulateRewards credits the coinbase of the given block with the mining
 // reward. The total reward consists of the static block reward and rewards for
 // included uncles. The coinbase of each uncle block is also rewarded.
-func accumulateRewards(config *params.ChainConfig, state *state.StateDB, header *types.Header, uncles []*types.Header) {
+func defaultAccumulateRewards(config *params.ChainConfig, state *state.StateDB, header *types.Header, uncles []*types.Header) {
 	// Select the correct block reward based on chain progression
 	blockReward := FrontierBlockReward
 	if config.IsByzantium(header.Number) {
@@ -623,4 +637,38 @@ func accumulateRewards(config *params.ChainConfig, state *state.StateDB, header 
 		reward.Add(reward, r)
 	}
 	state.AddBalance(header.Coinbase, reward)
+}
+
+// callistoAccumulateRewards()
+func callistoAccumulateRewards(config *params.ChainConfig, state *state.StateDB, header *types.Header, uncles []*types.Header) {
+	// Select the correct block reward based on chain progression
+	blockReward := CLOMinerReward
+	clotreasury := CLOTreasuryReward
+	clostake := CLOStakeReward
+	clohf1treasury := CLOHF1TreasuryReward
+	clohf1stake := CLOHF1StakeReward
+
+	// Accumulate the rewards for the miner and any included uncles
+	reward := new(big.Int).Set(blockReward)
+	r := new(big.Int)
+	for _, uncle := range uncles {
+		r.Add(uncle.Number, big8)
+		r.Sub(r, header.Number)
+		r.Mul(r, blockReward)
+		r.Div(r, big8)
+		state.AddBalance(uncle.Coinbase, r)
+
+		r.Div(blockReward, big32)
+		reward.Add(reward, r)
+	}
+	// Activate Callisto hardfork
+	if config.IsCLOHF1(header.Number) {
+		state.AddBalance(header.Coinbase, reward)
+		state.AddBalance(CLOTreasuryAddress, clohf1treasury)
+		state.AddBalance(CLOHF1StakeAddress, clohf1stake)
+	} else {
+		state.AddBalance(header.Coinbase, reward)
+		state.AddBalance(CLOTreasuryAddress, clotreasury)
+		state.AddBalance(CLOStakeAddress, clostake)
+	}
 }
