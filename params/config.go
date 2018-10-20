@@ -75,6 +75,22 @@ var (
 		Ethash:              new(EthashConfig),
 	}
 
+	// CallistoChainTestnetConfig
+	CallistoChainTestnetConfig = &ChainConfig{
+		ChainID:             big.NewInt(7929),
+		HomesteadBlock:      big.NewInt(0),
+		DAOForkBlock:        nil,
+		DAOForkSupport:      false,
+		EIP150Block:         big.NewInt(0),
+		EIP150Hash:          common.HexToHash("0x82270b80fc90beb005505a9ef95039639968a0e81b2904ad30128c93d713d2c4"),
+		EIP155Block:         big.NewInt(10),
+		EIP158Block:         big.NewInt(10),
+		ByzantiumBlock:      big.NewInt(20),
+		ConstantinopleBlock: nil,
+		CLOHF1Block:         big.NewInt(10000), // Don't enable yet
+		Ethash:              new(EthashConfig),
+	}
+
 	// MainnetTrustedCheckpoint contains the light client trusted checkpoint for the main network.
 	MainnetTrustedCheckpoint = &TrustedCheckpoint{
 		Name:         "mainnet",
