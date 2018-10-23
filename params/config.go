@@ -88,7 +88,7 @@ var (
 		EIP158Block:         big.NewInt(10),
 		ByzantiumBlock:      big.NewInt(20),
 		ConstantinopleBlock: nil,
-		CLOHF1Block:         big.NewInt(30),
+		CLOHF1Block:         big.NewInt(1000),
 		Ethash:              new(EthashConfig),
 	}
 

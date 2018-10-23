@@ -48,7 +48,8 @@ var (
 	CLOHF1StakeReward         = new(big.Int).Mul(big.NewInt(120), big.NewInt(1e+18)) // Block reward in wei for successfully mining a block upward for Callisto Network
 	CLOTreasuryAddress        = common.HexToAddress("0x74682Fc32007aF0b6118F259cBe7bCCC21641600")
 	CLOStakeAddress           = common.HexToAddress("0x3c06f218Ce6dD8E2c535a8925A2eDF81674984D9")
-	CLOHF1StakeAddress        = common.HexToAddress("0x3c06f218Ce6dD8E2c535a8925A2eDF81674984D9")
+	CLOHF1StakeAddress        = common.HexToAddress("0xd813419749b3c2cdc94a2f9cfcf154113264a9d6")
+	CLOHF1TestnetStakeAddress = common.HexToAddress("0xe643c8d2ced8cf4c6c6d856094ca01f19aab6eb3")
 	maxUncles                 = 2                // Maximum number of uncles allowed in a single block
 	allowedFutureBlockTime    = 15 * time.Second // Max time from current time allowed for blocks, before they're considered future blocks
 
