@@ -49,7 +49,6 @@ var (
 	CLOTreasuryAddress        = common.HexToAddress("0x74682Fc32007aF0b6118F259cBe7bCCC21641600")
 	CLOStakeAddress           = common.HexToAddress("0x3c06f218Ce6dD8E2c535a8925A2eDF81674984D9")
 	CLOHF1StakeAddress        = common.HexToAddress("0xd813419749b3c2cdc94a2f9cfcf154113264a9d6")
-	CLOHF1TestnetStakeAddress = common.HexToAddress("0xe643c8d2ced8cf4c6c6d856094ca01f19aab6eb3")
 	maxUncles                 = 2                // Maximum number of uncles allowed in a single block
 	allowedFutureBlockTime    = 15 * time.Second // Max time from current time allowed for blocks, before they're considered future blocks
 
@@ -645,11 +644,6 @@ func defaultAccumulateRewards(config *params.ChainConfig, state *state.StateDB, 
 func callistoAccumulateRewards(config *params.ChainConfig, state *state.StateDB, header *types.Header, uncles []*types.Header) {
 	// Select the correct block reward based on chain progression
 	blockReward := CLOMinerReward
-	cloHF1StakeAddress := CLOHF1StakeAddress
-
-	if config.ChainID.Cmp(big.NewInt(7929)) == 0 {
-		cloHF1StakeAddress = CLOHF1TestnetStakeAddress
-	}
 
 	// Accumulate the rewards for the miner and any included uncles
 	reward := new(big.Int).Set(blockReward)
@@ -664,11 +658,12 @@ func callistoAccumulateRewards(config *params.ChainConfig, state *state.StateDB,
 		r.Div(blockReward, big32)
 		reward.Add(reward, r)
 	}
+
 	// Activate Callisto hardfork
 	if config.IsCLOHF1(header.Number) {
 		state.AddBalance(header.Coinbase, reward)
 		state.AddBalance(CLOTreasuryAddress, CLOHF1TreasuryReward)
-		state.AddBalance(cloHF1StakeAddress, CLOHF1StakeReward)
+		state.AddBalance(CLOHF1StakeAddress, CLOHF1StakeReward)
 	} else {
 		state.AddBalance(header.Coinbase, reward)
 		state.AddBalance(CLOTreasuryAddress, CLOTreasuryReward)
