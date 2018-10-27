@@ -18,7 +18,6 @@ package params
 
 import (
 	"fmt"
-	"math"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -72,13 +71,13 @@ var (
 		EIP158Block:         big.NewInt(10),
 		ByzantiumBlock:      big.NewInt(20),
 		ConstantinopleBlock: nil,
-		CLOHF1Block:         big.NewInt(math.MaxInt64), // Don't enable yet
+		CLOHF1Block:         big.NewInt(1400000),
 		Ethash:              new(EthashConfig),
 	}
 
 	// CallistoChainTestnetConfig
 	CallistoChainTestnetConfig = &ChainConfig{
-		ChainID:             big.NewInt(7929),
+		ChainID:             big.NewInt(20729),
 		HomesteadBlock:      big.NewInt(0),
 		DAOForkBlock:        nil,
 		DAOForkSupport:      false,

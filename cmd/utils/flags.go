@@ -1268,7 +1268,7 @@ func SetEthConfig(ctx *cli.Context, stack *node.Node, cfg *eth.Config) {
 	switch {
 	case ctx.GlobalBool(TestnetFlag.Name):
 		if !ctx.GlobalIsSet(NetworkIdFlag.Name) {
-			cfg.NetworkId = 3
+			cfg.NetworkId = 79
 		}
 		cfg.Genesis = core.DefaultCallistoTestnetGenesisBlock()
 	case ctx.GlobalBool(RinkebyFlag.Name):
