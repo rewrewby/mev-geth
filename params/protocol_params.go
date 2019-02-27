@@ -94,5 +94,5 @@ var (
 	DurationLimit          = big.NewInt(13)     // The decision boundary on the blocktime duration used to determine whether difficulty should go up or not.
 
 	ActivationBlock  		= int64(2160000)
-	PenatlyCheckLenght 	 	= uint64(50)
+	PenaltyCheckLength	 	= uint64(50)
 )
