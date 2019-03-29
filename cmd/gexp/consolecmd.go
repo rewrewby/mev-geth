@@ -17,9 +17,12 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"strings"
+	"syscall"
 
 	"github.com/expanse-org/go-expanse/cmd/utils"
 	"github.com/expanse-org/go-expanse/console"
@@ -40,7 +43,7 @@ var (
 		Description: `
 The Gexp console is an interactive shell for the JavaScript runtime environment
 which exposes a node admin interface as well as the Ðapp JavaScript API.
-See https://github.com/expanse-org/go-expanse/wiki/Javascipt-Console.`,
+See https://github.com/expanse-org/go-expanse/wiki/JavaScript-Console.`,
 	}
 
 	attachCommand = cli.Command{
@@ -53,9 +56,8 @@ See https://github.com/expanse-org/go-expanse/wiki/Javascipt-Console.`,
 		Description: `
 The Gexp console is an interactive shell for the JavaScript runtime environment
 which exposes a node admin interface as well as the Ðapp JavaScript API.
-See https://github.com/expanse-org/go-expanse/wiki/Javascipt-Console.
-This command allows to open a console on a running gexp node.
-`,
+See https://github.com/expanse-org/go-expanse/wiki/JavaScript-Console.
+This command allows to open a console on a running gexp node.`,
 	}
 
 	javascriptCommand = cli.Command{
@@ -67,8 +69,7 @@ This command allows to open a console on a running gexp node.
 		Category:  "CONSOLE COMMANDS",
 		Description: `
 The JavaScript VM exposes a node admin interface as well as the Ðapp
-JavaScript API. See https://github.com/expanse-org/go-expanse/wiki/Javascipt-Console
-`,
+JavaScript API. See https://github.com/expanse-org/go-expanse/wiki/JavaScript-Console`,
 	}
 )
 
@@ -113,8 +114,23 @@ func localConsole(ctx *cli.Context) error {
 // remoteConsole will connect to a remote gexp instance, attaching a JavaScript
 // console to it.
 func remoteConsole(ctx *cli.Context) error {
-	// Attach to a remotely running gexp instance and start the JavaScript console
-	client, err := dialRPC(ctx.Args().First())
+	// Attach to a remotely running geth instance and start the JavaScript console
+	endpoint := ctx.Args().First()
+	if endpoint == "" {
+		path := node.DefaultDataDir()
+		if ctx.GlobalIsSet(utils.DataDirFlag.Name) {
+			path = ctx.GlobalString(utils.DataDirFlag.Name)
+		}
+		if path != "" {
+			if ctx.GlobalBool(utils.TestnetFlag.Name) {
+				path = filepath.Join(path, "testnet")
+			} else if ctx.GlobalBool(utils.RinkebyFlag.Name) {
+				path = filepath.Join(path, "rinkeby")
+			}
+		}
+		endpoint = fmt.Sprintf("%s/gexp.ipc", path)
+	}
+	client, err := dialRPC(endpoint)
 	if err != nil {
 		utils.Fatalf("Unable to attach to remote gexp: %v", err)
 	}
@@ -192,7 +208,7 @@ func ephemeralConsole(ctx *cli.Context) error {
 	}
 	// Wait for pending callbacks, but stop for Ctrl-C.
 	abort := make(chan os.Signal, 1)
-	signal.Notify(abort, os.Interrupt)
+	signal.Notify(abort, syscall.SIGINT, syscall.SIGTERM)
 
 	go func() {
 		<-abort

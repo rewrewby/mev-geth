@@ -27,7 +27,7 @@ import (
 )
 
 func tmpdir(t *testing.T) string {
-	dir, err := ioutil.TempDir("", "gexp-test")
+	dir, err := ioutil.TempDir("", "geth-test")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -92,7 +92,7 @@ func runGeth(t *testing.T, args ...string) *testgeth {
 
 	// Boot "geth". This actually runs the test binary but the TestMain
 	// function will prevent any tests from running.
-	tt.Run("gexp-test", args...)
+	tt.Run("geth-test", args...)
 
 	return tt
 }

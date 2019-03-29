@@ -84,9 +84,8 @@ network with your node, which is fully equivalent to the main network, but with 
 $ gexp --testnet --fast --cache=512 console
 ```
 
-The `--fast`, `--cache` flags and `console` subcommand have the exact same meaning as above and they
-are equally useful on the testnet too. Please see above for their explanations if you've skipped to
-here.
+The `console` subcommand have the exact same meaning as above and they are equally useful on the
+testnet too. Please see above for their explanations if you've skipped to here.
 
 Specifying the `--testnet` flag however will reconfigure your Gexp instance a bit:
 
@@ -104,18 +103,26 @@ over between the main network and test network, you should make sure to always u
 for play-money and real-money. Unless you manually move accounts, Gexp will by default correctly
 separate the two networks and will not make any accounts available between them.*
 
-### Configuration
+### Full node on the Rinkeby test network
 
-As an alternative to passing the numerous flags to the `geth` binary, you can also pass a configuration file via:
+The above test network is a cross client one based on the ethash proof-of-work consensus algorithm. As such, it has certain extra overhead and is more susceptible to reorganization attacks due to the network's low difficulty / security. Go Ethereum also supports connecting to a proof-of-authority based test network called [*Rinkeby*](https://www.rinkeby.io) (operated by members of the community). This network is lighter, more secure, but is only supported by go-ethereum.
 
 ```
-$ geth --config /path/to/your_config.toml
+$ geth --rinkeby console
+```
+
+### Configuration
+
+As an alternative to passing the numerous flags to the `gexp` binary, you can also pass a configuration file via:
+
+```
+$ gexp --config /path/to/your_config.toml
 ```
 
 To get an idea how the file should look like you can use the `dumpconfig` subcommand to export your existing configuration:
 
 ```
-$ geth --your-favourite-flags dumpconfig
+$ gexp --your-favourite-flags dumpconfig
 ```
 
 *Note: This works only with geth v1.6.0 and above.*
@@ -267,7 +274,7 @@ instance for mining, run it with all your usual flags, extended by:
 $ gexp <usual-flags> --mine --minerthreads=1 --etherbase=0x0000000000000000000000000000000000000000
 ```
 
-Which will start mining bocks and transactions on a single CPU thread, crediting all proceedings to
+Which will start mining blocks and transactions on a single CPU thread, crediting all proceedings to
 the account specified by `--etherbase`. You can further tune the mining by changing the default gas
 limit blocks converge to (`--targetgaslimit`) and the price transactions are accepted at (`--gasprice`).
 
