@@ -27,7 +27,7 @@ import (
 	"github.com/expanse-org/go-expanse/common"
 	"github.com/expanse-org/go-expanse/crypto"
 	"github.com/expanse-org/go-expanse/p2p"
-	"github.com/expanse-org/go-expanse/p2p/discover"
+	"github.com/expanse-org/go-expanse/p2p/enode"
 	"github.com/expanse-org/go-expanse/p2p/nat"
 )
 
@@ -139,15 +139,14 @@ func initialize(t *testing.T) {
 
 		err = node.server.Start()
 		if err != nil {
-			t.Fatalf("failed to start server %d.", i)
+			t.Fatalf("failed to start server %d. err: %v", i, err)
 		}
 
 		for j := 0; j < i; j++ {
 			peerNodeId := nodes[j].id
 			address, _ := net.ResolveTCPAddr("tcp", nodes[j].server.ListenAddr)
 			peerPort := uint16(address.Port)
-			peerNode := discover.PubkeyID(&peerNodeId.PublicKey)
-			peer := discover.NewNode(peerNode, address.IP, peerPort, peerPort)
+			peer := enode.NewV4(&peerNodeId.PublicKey, address.IP, int(peerPort), int(peerPort))
 			node.server.AddPeer(peer)
 		}
 

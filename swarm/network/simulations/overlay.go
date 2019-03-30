@@ -29,7 +29,7 @@ import (
 
 	"github.com/expanse-org/go-expanse/log"
 	"github.com/expanse-org/go-expanse/node"
-	"github.com/expanse-org/go-expanse/p2p/discover"
+	"github.com/expanse-org/go-expanse/p2p/enode"
 	"github.com/expanse-org/go-expanse/p2p/simulations"
 	"github.com/expanse-org/go-expanse/p2p/simulations/adapters"
 	"github.com/expanse-org/go-expanse/swarm/network"
@@ -64,29 +64,29 @@ func init() {
 
 type Simulation struct {
 	mtx    sync.Mutex
-	stores map[discover.NodeID]*state.InmemoryStore
+	stores map[enode.ID]state.Store
 }
 
 func NewSimulation() *Simulation {
 	return &Simulation{
-		stores: make(map[discover.NodeID]*state.InmemoryStore),
+		stores: make(map[enode.ID]state.Store),
 	}
 }
 
 func (s *Simulation) NewService(ctx *adapters.ServiceContext) (node.Service, error) {
-	id := ctx.Config.ID
+	node := ctx.Config.Node()
 	s.mtx.Lock()
-	store, ok := s.stores[id]
+	store, ok := s.stores[node.ID()]
 	if !ok {
 		store = state.NewInmemoryStore()
-		s.stores[id] = store
+		s.stores[node.ID()] = store
 	}
 	s.mtx.Unlock()
 
-	addr := network.NewAddrFromNodeID(id)
+	addr := network.NewAddr(node)
 
 	kp := network.NewKadParams()
-	kp.MinProxBinSize = 2
+	kp.NeighbourhoodSize = 2
 	kp.MaxBinSize = 4
 	kp.MinBinSize = 1
 	kp.MaxRetries = 1000

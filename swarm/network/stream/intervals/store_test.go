@@ -17,13 +17,10 @@
 package intervals
 
 import (
-	"errors"
 	"testing"
 
 	"github.com/expanse-org/go-expanse/swarm/state"
 )
-
-var ErrNotFound = errors.New("not found")
 
 // TestInmemoryStore tests basic functionality of InmemoryStore.
 func TestInmemoryStore(t *testing.T) {

@@ -26,6 +26,7 @@ import (
 	"sync"
 	"time"
 
+	mapset "github.com/deckarep/golang-set"
 	"github.com/expanse-org/go-expanse/common"
 	"github.com/expanse-org/go-expanse/crypto"
 	"github.com/expanse-org/go-expanse/log"
@@ -35,7 +36,6 @@ import (
 
 	"golang.org/x/crypto/pbkdf2"
 	"golang.org/x/sync/syncmap"
-	set "gopkg.in/fatih/set.v0"
 )
 
 type Statistics struct {
@@ -64,7 +64,7 @@ type Whisper struct {
 
 	poolMu      sync.RWMutex              // Mutex to sync the message and expiration pools
 	envelopes   map[common.Hash]*Envelope // Pool of envelopes currently tracked by this node
-	expirations map[uint32]*set.SetNonTS  // Message expiration pool
+	expirations map[uint32]mapset.Set     // Message expiration pool
 
 	peerMu sync.RWMutex       // Mutex to sync the active peer set
 	peers  map[*Peer]struct{} // Set of currently active peers
@@ -91,7 +91,7 @@ func New(cfg *Config) *Whisper {
 		privateKeys:  make(map[string]*ecdsa.PrivateKey),
 		symKeys:      make(map[string][]byte),
 		envelopes:    make(map[common.Hash]*Envelope),
-		expirations:  make(map[uint32]*set.SetNonTS),
+		expirations:  make(map[uint32]mapset.Set),
 		peers:        make(map[*Peer]struct{}),
 		messageQueue: make(chan *Envelope, messageQueueLimit),
 		p2pMsgQueue:  make(chan *Envelope, messageQueueLimit),
@@ -292,7 +292,7 @@ func (w *Whisper) AddKeyPair(key *ecdsa.PrivateKey) (string, error) {
 	return id, nil
 }
 
-// HasKeyPair checks if the the whisper node is configured with the private key
+// HasKeyPair checks if the whisper node is configured with the private key
 // of the specified public pair.
 func (w *Whisper) HasKeyPair(id string) bool {
 	w.keyMu.RLock()
@@ -609,9 +609,9 @@ func (w *Whisper) add(envelope *Envelope) (bool, error) {
 	if !alreadyCached {
 		w.envelopes[hash] = envelope
 		if w.expirations[envelope.Expiry] == nil {
-			w.expirations[envelope.Expiry] = set.NewNonTS()
+			w.expirations[envelope.Expiry] = mapset.NewThreadUnsafeSet()
 		}
-		if !w.expirations[envelope.Expiry].Has(hash) {
+		if !w.expirations[envelope.Expiry].Contains(hash) {
 			w.expirations[envelope.Expiry].Add(hash)
 		}
 	}
@@ -718,7 +718,7 @@ func (w *Whisper) expire() {
 				w.stats.messagesCleared++
 				w.stats.memoryCleared += sz
 				w.stats.memoryUsed -= sz
-				return true
+				return false
 			})
 			w.expirations[expiry].Clear()
 			delete(w.expirations, expiry)
