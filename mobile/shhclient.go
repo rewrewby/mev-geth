@@ -16,7 +16,7 @@
 
 // Contains a wrapper for the Whisper client.
 
-package geth
+package gexp
 
 import (
 	"github.com/expanse-org/go-expanse/whisper/shhclient"
