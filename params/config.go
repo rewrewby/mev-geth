@@ -42,8 +42,10 @@ var (
 		EIP155Block:         big.NewInt(600000),
 		EIP158Block:         big.NewInt(600000),
 		ByzantiumBlock:      big.NewInt(800000),
-		ConstantinopleBlock: big.NewInt(1800000),
-		PetersburgBlock:     big.NewInt(1800000),
+		ConstantinopleBlock: big.NewInt(1860000),
+		PetersburgBlock:     big.NewInt(1860000),
+		PirlGuardBlock: 		 1800000,
+		PirlGuardLength: 		 60,
 		Ethash:              new(EthashConfig),
 	}
 
@@ -69,6 +71,8 @@ var (
 		ByzantiumBlock:      big.NewInt(1700000),
 		ConstantinopleBlock: big.NewInt(4230000),
 		PetersburgBlock:     big.NewInt(4939394),
+		PirlGuardBlock: 		 0,
+		PirlGuardLength: 		 100,
 		Ethash:              new(EthashConfig),
 	}
 
@@ -94,6 +98,8 @@ var (
 		ByzantiumBlock:      big.NewInt(1035301),
 		ConstantinopleBlock: big.NewInt(3660663),
 		PetersburgBlock:     big.NewInt(9999999), //TODO! Insert Rinkeby block number
+		PirlGuardBlock: 		 0,
+		PirlGuardLength: 		 0,
 		Clique: &CliqueConfig{
 			Period: 15,
 			Epoch:  30000,
@@ -121,6 +127,8 @@ var (
 		ByzantiumBlock:      big.NewInt(0),
 		ConstantinopleBlock: big.NewInt(0),
 		PetersburgBlock:     big.NewInt(0),
+		PirlGuardBlock: 		 0,
+		PirlGuardLength: 		 0,
 		Clique: &CliqueConfig{
 			Period: 15,
 			Epoch:  30000,
@@ -141,16 +149,16 @@ var (
 	//
 	// This configuration is intentionally not using keyed fields to force anyone
 	// adding flags to the config to also have to set these fields.
-	AllEthashProtocolChanges = &ChainConfig{big.NewInt(1337), big.NewInt(0), nil, false, big.NewInt(0), common.Hash{}, big.NewInt(0), big.NewInt(0), big.NewInt(0), big.NewInt(0), big.NewInt(0), nil, new(EthashConfig), nil}
+	AllEthashProtocolChanges = &ChainConfig{big.NewInt(1337), big.NewInt(0), nil, false, big.NewInt(0), common.Hash{}, big.NewInt(0), big.NewInt(0), big.NewInt(0), big.NewInt(0), big.NewInt(0), nil, uint64(0), uint64(0), new(EthashConfig), nil}
 
 	// AllCliqueProtocolChanges contains every protocol change (EIPs) introduced
 	// and accepted by the Ethereum core developers into the Clique consensus.
 	//
 	// This configuration is intentionally not using keyed fields to force anyone
 	// adding flags to the config to also have to set these fields.
-	AllCliqueProtocolChanges = &ChainConfig{big.NewInt(1337), big.NewInt(0), nil, false, big.NewInt(0), common.Hash{}, big.NewInt(0), big.NewInt(0), big.NewInt(0), big.NewInt(0), big.NewInt(0), nil, nil, &CliqueConfig{Period: 0, Epoch: 30000}}
+	AllCliqueProtocolChanges = &ChainConfig{big.NewInt(1337), big.NewInt(0), nil, false, big.NewInt(0), common.Hash{}, big.NewInt(0), big.NewInt(0), big.NewInt(0), big.NewInt(0), big.NewInt(0), nil, 0, 0, nil, &CliqueConfig{Period: 0, Epoch: 30000}}
 
-	TestChainConfig = &ChainConfig{big.NewInt(1), big.NewInt(0), nil, false, big.NewInt(0), common.Hash{}, big.NewInt(0), big.NewInt(0), big.NewInt(0), big.NewInt(0), big.NewInt(0), nil, new(EthashConfig), nil}
+	TestChainConfig = &ChainConfig{big.NewInt(1), big.NewInt(0), nil, false, big.NewInt(0), common.Hash{}, big.NewInt(0), big.NewInt(0), big.NewInt(0), big.NewInt(0), big.NewInt(0), nil, 0, 0, new(EthashConfig), nil}
 	TestRules       = TestChainConfig.Rules(new(big.Int))
 )
 
@@ -191,6 +199,9 @@ type ChainConfig struct {
 	PetersburgBlock     *big.Int `json:"petersburgBlock,omitempty"`     // Petersburg switch block (nil = same as Constantinople)
 	EWASMBlock          *big.Int `json:"ewasmBlock,omitempty"`          // EWASM switch block (nil = no fork, 0 = already activated)
 
+	PirlGuardBlock 		 uint64 `json:"pirlGuardBlock,omitempty"`
+	PirlGuardLength 		 uint64 `json:"pirlGuardBlock,omitempty"`
+
 	// Various consensus engines
 	Ethash *EthashConfig `json:"ethash,omitempty"`
 	Clique *CliqueConfig `json:"clique,omitempty"`
@@ -226,7 +237,7 @@ func (c *ChainConfig) String() string {
 	default:
 		engine = "unknown"
 	}
-	return fmt.Sprintf("{ChainID: %v Homestead: %v DAO: %v DAOSupport: %v EIP150: %v EIP155: %v EIP158: %v Byzantium: %v Constantinople: %v  ConstantinopleFix: %v Engine: %v}",
+	return fmt.Sprintf("{ChainID: %v Homestead: %v DAO: %v DAOSupport: %v EIP150: %v EIP155: %v EIP158: %v Byzantium: %v Constantinople: %v  ConstantinopleFix: %v Engine: %v PirlGuard %v}",
 		c.ChainID,
 		c.HomesteadBlock,
 		c.DAOForkBlock,
@@ -238,6 +249,7 @@ func (c *ChainConfig) String() string {
 		c.ConstantinopleBlock,
 		c.PetersburgBlock,
 		engine,
+		c.PirlGuardBlock,
 	)
 }
 

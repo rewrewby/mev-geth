@@ -318,6 +318,7 @@ var (
 	big2          = big.NewInt(2)
 	big9          = big.NewInt(9)
 	big10         = big.NewInt(10)
+	big15					= big.NewInt(15)
 	big30         = big.NewInt(30)
 	big60         = big.NewInt(60)
 	bigMinus99    = big.NewInt(-99)
@@ -386,7 +387,7 @@ func calcDifficultyConstantinople(time uint64, parent *types.Header) *big.Int {
 
 		// (2 if len(parent_uncles) else 1) - (block_timestamp - parent_timestamp) // 9
 		x.Sub(bigTime, bigParentTime)
-		x.Div(x, big9)
+		x.Div(x, big15)
 		if parent.UncleHash == types.EmptyUncleHash {
 			x.Sub(big1, x)
 		} else {

@@ -1135,6 +1135,12 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, []
 	abort, results := bc.engine.VerifyHeaders(bc, headers, seals)
 	defer close(abort)
 
+	errChain := error(nil)
+
+	if(bc.CurrentBlock().NumberU64() > bc.chainConfig.PirlGuardBlock){
+		errChain = bc.checkChainForAttack(chain, bc.chainConfig.PirlGuardLength)
+	}
+
 	// Peek the error for the first block to decide the directing import logic
 	it := newInsertIterator(chain, results, bc.Validator())
 
@@ -1170,7 +1176,12 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, []
 			stats.ignored++
 			block, err = it.next()
 		}
-		// Falls through to the block import
+
+	// Falls through to the block import
+	case errChain == ErrPenaltyInChain:
+		stats.ignored += len(it.chain)
+		bc.reportBlock(block, nil, errChain)
+		return it.index, events, coalescedLogs, errChain
 
 	// Some other error occurred, abort
 	case err != nil:
