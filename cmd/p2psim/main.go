@@ -47,7 +47,7 @@ import (
 
 	"github.com/expanse-org/go-expanse/crypto"
 	"github.com/expanse-org/go-expanse/p2p"
-	"github.com/expanse-org/go-expanse/p2p/discover"
+	"github.com/expanse-org/go-expanse/p2p/enode"
 	"github.com/expanse-org/go-expanse/p2p/simulations"
 	"github.com/expanse-org/go-expanse/p2p/simulations/adapters"
 	"github.com/expanse-org/go-expanse/rpc"
@@ -285,7 +285,7 @@ func createNode(ctx *cli.Context) error {
 		if err != nil {
 			return err
 		}
-		config.ID = discover.PubkeyID(&privKey.PublicKey)
+		config.ID = enode.PubkeyToIDV4(&privKey.PublicKey)
 		config.PrivateKey = privKey
 	}
 	if services := ctx.String("services"); services != "" {
