@@ -52,3 +52,14 @@ func calcBigNumber(reward float64) *big.Int {
 	bigReward.Int(bigRewardInt)
 	return bigRewardInt
 }
+
+func getMonetaryPolicyStep(blockNumber *big.Int) *big.Int {
+	if blockNumber.Cmp(big.NewInt(4250001)) == -1 {
+		return big.NewInt(2750001)
+	} else if blockNumber.Cmp(big.NewInt(5750001)) == -1 {
+		return big.NewInt(4250001)
+	} else if blockNumber.Cmp(big.NewInt(7250001)) == -1 {
+		return big.NewInt(5750001)
+	}
+	return big.NewInt(7250001)
+}

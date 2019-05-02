@@ -646,9 +646,10 @@ func callistoAccumulateRewards(config *params.ChainConfig, state *state.StateDB,
 	}
 
 	if config.IsCLOMP(header.Number) {
-		blockReward = CLOMonetaryPolicyMinerReward[header.Number]
-		treasuryReward = CLOMonetaryPolicyTreasury[header.Number]
-		stakeReward = CLOMonetaryPolicyStake[header.Number]
+		monetaryPolicyStep := getMonetaryPolicyStep(header.Number)
+		blockReward = CLOMonetaryPolicyMinerReward[monetaryPolicyStep]
+		treasuryReward = CLOMonetaryPolicyTreasury[monetaryPolicyStep]
+		stakeReward = CLOMonetaryPolicyStake[monetaryPolicyStep]
 	}
 
 	// Accumulate the rewards for the miner and any included uncles
