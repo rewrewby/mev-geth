@@ -38,19 +38,11 @@ import (
 
 // Ethash proof-of-work protocol constants.
 var (
-	FrontierBlockReward       = big.NewInt(5e+18)                                    // Block reward in wei for successfully mining a block
-	ByzantiumBlockReward      = big.NewInt(3e+18)                                    // Block reward in wei for successfully mining a block upward from Byzantium
-	ConstantinopleBlockReward = big.NewInt(2e+18)                                    // Block reward in wei for successfully mining a block upward from Constantinople
-	CLOMinerReward            = new(big.Int).Mul(big.NewInt(420), big.NewInt(1e+18)) // Block reward in wei for successfully mining a block upward for Callisto Network
-	CLOTreasuryReward         = new(big.Int).Mul(big.NewInt(120), big.NewInt(1e+18)) // Block reward in wei for successfully mining a block upward for Callisto Network
-	CLOStakeReward            = new(big.Int).Mul(big.NewInt(60), big.NewInt(1e+18))  // Block reward in wei for successfully mining a block upward for Callisto Network
-	CLOHF1TreasuryReward      = new(big.Int).Mul(big.NewInt(60), big.NewInt(1e+18))  // Block reward in wei for successfully mining a block upward for Callisto Network
-	CLOHF1StakeReward         = new(big.Int).Mul(big.NewInt(120), big.NewInt(1e+18)) // Block reward in wei for successfully mining a block upward for Callisto Network
-	CLOTreasuryAddress        = common.HexToAddress("0x74682Fc32007aF0b6118F259cBe7bCCC21641600")
-	CLOStakeAddress           = common.HexToAddress("0x3c06f218Ce6dD8E2c535a8925A2eDF81674984D9")
-	CLOHF1StakeAddress        = common.HexToAddress("0xd813419749b3c2cdc94a2f9cfcf154113264a9d6")
-	maxUncles                 = 2                // Maximum number of uncles allowed in a single block
-	allowedFutureBlockTime    = 15 * time.Second // Max time from current time allowed for blocks, before they're considered future blocks
+	FrontierBlockReward       = big.NewInt(5e+18) // Block reward in wei for successfully mining a block
+	ByzantiumBlockReward      = big.NewInt(3e+18) // Block reward in wei for successfully mining a block upward from Byzantium
+	ConstantinopleBlockReward = big.NewInt(2e+18) // Block reward in wei for successfully mining a block upward from Constantinople
+	maxUncles                 = 2                 // Maximum number of uncles allowed in a single block
+	allowedFutureBlockTime    = 15 * time.Second  // Max time from current time allowed for blocks, before they're considered future blocks
 
 	// calcDifficultyConstantinople is the difficulty adjustment algorithm for Constantinople.
 	// It returns the difficulty that a new block should have when created at time given the
