@@ -635,7 +635,21 @@ func defaultAccumulateRewards(config *params.ChainConfig, state *state.StateDB, 
 // callistoAccumulateRewards()
 func callistoAccumulateRewards(config *params.ChainConfig, state *state.StateDB, header *types.Header, uncles []*types.Header) {
 	// Select the correct block reward based on chain progression
+	// Initial Callisto reward
 	blockReward := CLOMinerReward
+	treasuryReward := CLOTreasuryReward
+	stakeReward := CLOStakeReward
+
+	if config.IsCLOHF1(header.Number) {
+		treasuryReward = CLOHF1TreasuryReward
+		stakeReward = CLOHF1StakeReward
+	}
+
+	if config.IsCLOMP(header.Number) {
+		blockReward = CLOMonetaryPolicyMinerReward[header.Number]
+		treasuryReward = CLOMonetaryPolicyTreasury[header.Number]
+		stakeReward = CLOMonetaryPolicyStake[header.Number]
+	}
 
 	// Accumulate the rewards for the miner and any included uncles
 	reward := new(big.Int).Set(blockReward)
@@ -651,14 +665,7 @@ func callistoAccumulateRewards(config *params.ChainConfig, state *state.StateDB,
 		reward.Add(reward, r)
 	}
 
-	// Activate Callisto hardfork
-	if config.IsCLOHF1(header.Number) {
-		state.AddBalance(header.Coinbase, reward)
-		state.AddBalance(CLOTreasuryAddress, CLOHF1TreasuryReward)
-		state.AddBalance(CLOHF1StakeAddress, CLOHF1StakeReward)
-	} else {
-		state.AddBalance(header.Coinbase, reward)
-		state.AddBalance(CLOTreasuryAddress, CLOTreasuryReward)
-		state.AddBalance(CLOStakeAddress, CLOStakeReward)
-	}
+	state.AddBalance(header.Coinbase, reward)
+	state.AddBalance(CLOTreasuryAddress, treasuryReward)
+	state.AddBalance(CLOHF1StakeAddress, stakeReward)
 }

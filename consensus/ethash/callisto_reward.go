@@ -24,25 +24,25 @@ var (
 	// CLOHF1StakeAddress - Stake Address HF1
 	CLOHF1StakeAddress = common.HexToAddress("0xd813419749b3c2cdc94a2f9cfcf154113264a9d6")
 	// CLOMonetaryPolicyMinerReward - Monetary Policy blocks and miner rewards
-	CLOMonetaryPolicyMinerReward = map[uint64]*big.Int{
-		2750001: calcBigNumber(234),
-		4250001: calcBigNumber(129.6),
-		5750001: calcBigNumber(71.28),
-		7250001: calcBigNumber(38.88),
+	CLOMonetaryPolicyMinerReward = map[*big.Int]*big.Int{
+		big.NewInt(2750001): calcBigNumber(234),
+		big.NewInt(4250001): calcBigNumber(129.6),
+		big.NewInt(5750001): calcBigNumber(71.28),
+		big.NewInt(7250001): calcBigNumber(38.88),
 	}
 	// CLOMonetaryPolicyTreasury - Monetary Policy blocks and treasury rewards
-	CLOMonetaryPolicyTreasury = map[uint64]*big.Int{
-		2750001: calcBigNumber(36),
-		4250001: calcBigNumber(21.6),
-		5750001: calcBigNumber(12.96),
-		7250001: calcBigNumber(7.77),
+	CLOMonetaryPolicyTreasury = map[*big.Int]*big.Int{
+		big.NewInt(2750001): calcBigNumber(36),
+		big.NewInt(4250001): calcBigNumber(21.6),
+		big.NewInt(5750001): calcBigNumber(12.96),
+		big.NewInt(7250001): calcBigNumber(7.77),
 	}
 	// CLOMonetaryPolicyStake - Monetary Policy blocks and stake rewards
-	CLOMonetaryPolicyStake = map[uint64]*big.Int{
-		2750001: calcBigNumber(90),
-		4250001: calcBigNumber(64.8),
-		5750001: calcBigNumber(45.36),
-		7250001: calcBigNumber(31.1),
+	CLOMonetaryPolicyStake = map[*big.Int]*big.Int{
+		big.NewInt(2750001): calcBigNumber(90),
+		big.NewInt(4250001): calcBigNumber(64.8),
+		big.NewInt(5750001): calcBigNumber(45.36),
+		big.NewInt(7250001): calcBigNumber(31.1),
 	}
 )
 
