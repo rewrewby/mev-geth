@@ -550,12 +550,18 @@ func (ethash *Ethash) verifySeal(chain consensus.ChainReader, header *types.Head
 
 var accumulateRewards func(config *params.ChainConfig, state *state.StateDB, header *types.Header, uncles []*types.Header) = defaultAccumulateRewards
 
+var getMonetaryPolicyStep func(blockNumber *big.Int) *big.Int = getMonetaryPolicyStepMainnet
+
 // Prepare implements consensus.Engine, initializing the difficulty field of a
 // header to conform to the ethash protocol. The changes are done inline.
 func (ethash *Ethash) Prepare(chain consensus.ChainReader, header *types.Header) error {
 	genesisHash := chain.GetHeaderByNumber(0).Hash()
 	if genesisHash == params.CallistoGenesisHash || genesisHash == params.CallistoTestnetGenesisHash {
 		accumulateRewards = callistoAccumulateRewards
+	}
+
+	if genesisHash == params.CallistoTestnetGenesisHash {
+		getMonetaryPolicyStep = getMonetaryPolicyStepTestnet
 	}
 
 	parent := chain.GetHeader(header.ParentHash, header.Number.Uint64()-1)
