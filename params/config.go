@@ -70,8 +70,10 @@ var (
 		EIP155Block:         big.NewInt(10),
 		EIP158Block:         big.NewInt(10),
 		ByzantiumBlock:      big.NewInt(20),
-		ConstantinopleBlock: nil,
 		CLOHF1Block:         big.NewInt(1400000),
+		CLOMPBlock:          nil,
+		ConstantinopleBlock: nil,
+		PetersburgBlock:     nil,
 		Ethash:              new(EthashConfig),
 	}
 
@@ -86,8 +88,10 @@ var (
 		EIP155Block:         big.NewInt(10),
 		EIP158Block:         big.NewInt(10),
 		ByzantiumBlock:      big.NewInt(20),
-		ConstantinopleBlock: nil,
 		CLOHF1Block:         big.NewInt(1000),
+		CLOMPBlock:          big.NewInt(1500),
+		ConstantinopleBlock: big.NewInt(2000),
+		PetersburgBlock:     big.NewInt(2000),
 		Ethash:              new(EthashConfig),
 	}
 
