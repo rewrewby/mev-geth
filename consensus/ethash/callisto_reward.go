@@ -23,27 +23,6 @@ var (
 	CLOStakeAddress = common.HexToAddress("0x3c06f218Ce6dD8E2c535a8925A2eDF81674984D9")
 	// CLOHF1StakeAddress - Stake Address HF1
 	CLOHF1StakeAddress = common.HexToAddress("0xd813419749b3c2cdc94a2f9cfcf154113264a9d6")
-	// CLOMonetaryPolicyMinerReward - Monetary Policy blocks and miner rewards
-	CLOMonetaryPolicyMinerReward = map[*big.Int]*big.Int{
-		big.NewInt(2750001): calcBigNumber(234),
-		big.NewInt(4250001): calcBigNumber(129.6),
-		big.NewInt(5750001): calcBigNumber(71.28),
-		big.NewInt(7250001): calcBigNumber(38.88),
-	}
-	// CLOMonetaryPolicyTreasury - Monetary Policy blocks and treasury rewards
-	CLOMonetaryPolicyTreasury = map[*big.Int]*big.Int{
-		big.NewInt(2750001): calcBigNumber(36),
-		big.NewInt(4250001): calcBigNumber(21.6),
-		big.NewInt(5750001): calcBigNumber(12.96),
-		big.NewInt(7250001): calcBigNumber(7.77),
-	}
-	// CLOMonetaryPolicyStake - Monetary Policy blocks and stake rewards
-	CLOMonetaryPolicyStake = map[*big.Int]*big.Int{
-		big.NewInt(2750001): calcBigNumber(90),
-		big.NewInt(4250001): calcBigNumber(64.8),
-		big.NewInt(5750001): calcBigNumber(45.36),
-		big.NewInt(7250001): calcBigNumber(31.1),
-	}
 )
 
 func calcBigNumber(reward float64) *big.Int {
@@ -51,6 +30,42 @@ func calcBigNumber(reward float64) *big.Int {
 	bigRewardInt := new(big.Int)
 	bigReward.Int(bigRewardInt)
 	return bigRewardInt
+}
+
+func getCLOMonetaryPolicyMinerReward(blockNumber *big.Int) *big.Int {
+	switch {
+	case big.NewInt(2750001).Cmp(blockNumber) == 0:
+		return calcBigNumber(234)
+	case big.NewInt(4250001).Cmp(blockNumber) == 0:
+		return calcBigNumber(129.6)
+	case big.NewInt(5750001).Cmp(blockNumber) == 0:
+		return calcBigNumber(71.28)
+	}
+	return calcBigNumber(38.88)
+}
+
+func getCLOMonetaryPolicyTreasury(blockNumber *big.Int) *big.Int {
+	switch {
+	case big.NewInt(2750001).Cmp(blockNumber) == 0:
+		return calcBigNumber(36)
+	case big.NewInt(4250001).Cmp(blockNumber) == 0:
+		return calcBigNumber(21.6)
+	case big.NewInt(5750001).Cmp(blockNumber) == 0:
+		return calcBigNumber(12.96)
+	}
+	return calcBigNumber(7.77)
+}
+
+func getCLOMonetaryPolicyStake(blockNumber *big.Int) *big.Int {
+	switch {
+	case big.NewInt(2750001).Cmp(blockNumber) == 0:
+		return calcBigNumber(90)
+	case big.NewInt(4250001).Cmp(blockNumber) == 0:
+		return calcBigNumber(64.8)
+	case big.NewInt(5750001).Cmp(blockNumber) == 0:
+		return calcBigNumber(45.36)
+	}
+	return calcBigNumber(31.1)
 }
 
 func getMonetaryPolicyStepMainnet(blockNumber *big.Int) *big.Int {
@@ -65,7 +80,7 @@ func getMonetaryPolicyStepMainnet(blockNumber *big.Int) *big.Int {
 }
 
 func getMonetaryPolicyStepTestnet(blockNumber *big.Int) *big.Int {
-	if blockNumber.Cmp(big.NewInt(1500)) == -1 {
+	if blockNumber.Cmp(big.NewInt(2000)) == -1 {
 		return big.NewInt(2750001)
 	} else if blockNumber.Cmp(big.NewInt(3000)) == -1 {
 		return big.NewInt(4250001)
