@@ -86,5 +86,5 @@ var CallistoBootnodes = []string{
 }
 
 var CallistoTestnetBootnodes = []string{
-	"enode://33c47b8d28daa3773751ab02fcb486806b3260df02a58bbfb4d00af0fcec79ed64a96dd5cfe4e78b48af59fb4d549f659e4943cdd0c73ccb217b59164ca2549a@45.55.38.193:30303",
+	"enode://1638d7c14d6f638e9faea17ae20597658f9ce65ed2f3ac06d7252088130e6b5c69aaab9900d6f1d415b898ee78e2c8847148d9c42598b54b90a69b18b0e8a93c@51.89.6.152:30303",
 }

@@ -43,7 +43,7 @@ import (
 	"github.com/ethereum/go-ethereum/params"
 	"github.com/ethereum/go-ethereum/rlp"
 	"github.com/ethereum/go-ethereum/trie"
-	"github.com/hashicorp/golang-lru"
+	lru "github.com/hashicorp/golang-lru"
 )
 
 var (
@@ -1135,7 +1135,14 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, []
 	abort, results := bc.engine.VerifyHeaders(bc, headers, seals)
 	defer close(abort)
 
-	errChain := bc.checkChainForAttack(chain)
+	chainProtectionActivationBlock := params.ActivationBlock
+
+	// Blockchain CLO Testnet
+	if bc.chainConfig.ChainID.Cmp(big.NewInt(20729)) == 0 {
+		chainProtectionActivationBlock = params.ActivationBlockTestnet
+	}
+
+	errChain := bc.checkChainForAttack(chain, chainProtectionActivationBlock)
 
 	// Peek the error for the first block to decide the directing import logic
 	it := newInsertIterator(chain, results, bc.Validator())

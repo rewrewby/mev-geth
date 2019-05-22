@@ -556,6 +556,7 @@ var getMonetaryPolicyStep func(blockNumber *big.Int) *big.Int = getMonetaryPolic
 // header to conform to the ethash protocol. The changes are done inline.
 func (ethash *Ethash) Prepare(chain consensus.ChainReader, header *types.Header) error {
 	genesisHash := chain.GetHeaderByNumber(0).Hash()
+
 	if genesisHash == params.CallistoGenesisHash || genesisHash == params.CallistoTestnetGenesisHash {
 		accumulateRewards = callistoAccumulateRewards
 	}

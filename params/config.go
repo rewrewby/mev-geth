@@ -29,7 +29,7 @@ var (
 	TestnetGenesisHash         = common.HexToHash("0x41941023680923e0fe4d74a34bdac8141f2540e3ae90623718e47d66d1ca4a2d")
 	RinkebyGenesisHash         = common.HexToHash("0x6341fd3daf94b748c72ced5a5b26028f2474f5f00d824504e4fa37a75767e177")
 	CallistoGenesisHash        = common.HexToHash("0x82270b80fc90beb005505a9ef95039639968a0e81b2904ad30128c93d713d2c4")
-	CallistoTestnetGenesisHash = common.HexToHash("0x49e84b0629f4197e87b065b8a815549e3449b0f5253ba3e2a5dd16f005d708f6")
+	CallistoTestnetGenesisHash = common.HexToHash("0xa63aef79cf47197fc1cd69710528f92f48c7192c1247c585c21f108139d1be9b")
 	GoerliGenesisHash          = common.HexToHash("0xbf7e331f7f7c1dd2e05159666b3bf8bc7a8a3a9eb1d518969eab529dd9b88c1a")
 )
 
@@ -71,9 +71,9 @@ var (
 		EIP158Block:         big.NewInt(10),
 		ByzantiumBlock:      big.NewInt(20),
 		CLOHF1Block:         big.NewInt(1400000),
-		CLOMPBlock:          nil,
-		ConstantinopleBlock: nil,
-		PetersburgBlock:     nil,
+		CLOMPBlock:          big.NewInt(2900000),
+		ConstantinopleBlock: big.NewInt(3100000),
+		PetersburgBlock:     big.NewInt(3100000),
 		Ethash:              new(EthashConfig),
 	}
 
