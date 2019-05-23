@@ -34,11 +34,11 @@ func calcBigNumber(reward float64) *big.Int {
 
 func getCLOMonetaryPolicyMinerReward(blockNumber *big.Int) *big.Int {
 	switch {
-	case big.NewInt(2750001).Cmp(blockNumber) == 0:
+	case big.NewInt(2900001).Cmp(blockNumber) == 0:
 		return calcBigNumber(234)
-	case big.NewInt(4250001).Cmp(blockNumber) == 0:
+	case big.NewInt(4400001).Cmp(blockNumber) == 0:
 		return calcBigNumber(129.6)
-	case big.NewInt(5750001).Cmp(blockNumber) == 0:
+	case big.NewInt(5900001).Cmp(blockNumber) == 0:
 		return calcBigNumber(71.28)
 	}
 	return calcBigNumber(38.88)
@@ -46,11 +46,11 @@ func getCLOMonetaryPolicyMinerReward(blockNumber *big.Int) *big.Int {
 
 func getCLOMonetaryPolicyTreasury(blockNumber *big.Int) *big.Int {
 	switch {
-	case big.NewInt(2750001).Cmp(blockNumber) == 0:
+	case big.NewInt(2900001).Cmp(blockNumber) == 0:
 		return calcBigNumber(36)
-	case big.NewInt(4250001).Cmp(blockNumber) == 0:
+	case big.NewInt(4400001).Cmp(blockNumber) == 0:
 		return calcBigNumber(21.6)
-	case big.NewInt(5750001).Cmp(blockNumber) == 0:
+	case big.NewInt(5900001).Cmp(blockNumber) == 0:
 		return calcBigNumber(12.96)
 	}
 	return calcBigNumber(7.77)
@@ -58,34 +58,34 @@ func getCLOMonetaryPolicyTreasury(blockNumber *big.Int) *big.Int {
 
 func getCLOMonetaryPolicyStake(blockNumber *big.Int) *big.Int {
 	switch {
-	case big.NewInt(2750001).Cmp(blockNumber) == 0:
+	case big.NewInt(2900001).Cmp(blockNumber) == 0:
 		return calcBigNumber(90)
-	case big.NewInt(4250001).Cmp(blockNumber) == 0:
+	case big.NewInt(4400001).Cmp(blockNumber) == 0:
 		return calcBigNumber(64.8)
-	case big.NewInt(5750001).Cmp(blockNumber) == 0:
+	case big.NewInt(5900001).Cmp(blockNumber) == 0:
 		return calcBigNumber(45.36)
 	}
 	return calcBigNumber(31.1)
 }
 
 func getMonetaryPolicyStepMainnet(blockNumber *big.Int) *big.Int {
-	if blockNumber.Cmp(big.NewInt(4250001)) == -1 {
-		return big.NewInt(2750001)
-	} else if blockNumber.Cmp(big.NewInt(5750001)) == -1 {
-		return big.NewInt(4250001)
-	} else if blockNumber.Cmp(big.NewInt(7250001)) == -1 {
-		return big.NewInt(5750001)
+	if blockNumber.Cmp(big.NewInt(4400001)) == -1 {
+		return big.NewInt(2900001)
+	} else if blockNumber.Cmp(big.NewInt(5900001)) == -1 {
+		return big.NewInt(4400001)
+	} else if blockNumber.Cmp(big.NewInt(7400001)) == -1 {
+		return big.NewInt(5900001)
 	}
-	return big.NewInt(7250001)
+	return big.NewInt(7400001)
 }
 
 func getMonetaryPolicyStepTestnet(blockNumber *big.Int) *big.Int {
 	if blockNumber.Cmp(big.NewInt(2000)) == -1 {
-		return big.NewInt(2750001)
+		return big.NewInt(2900001)
 	} else if blockNumber.Cmp(big.NewInt(3000)) == -1 {
-		return big.NewInt(4250001)
+		return big.NewInt(4400001)
 	} else if blockNumber.Cmp(big.NewInt(4000)) == -1 {
-		return big.NewInt(5750001)
+		return big.NewInt(5900001)
 	}
-	return big.NewInt(7250001)
+	return big.NewInt(7400001)
 }
