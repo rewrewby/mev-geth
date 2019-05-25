@@ -2,14 +2,16 @@ package core
 
 import (
 	"errors"
+	"sort"
+
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/log"
 	"github.com/ethereum/go-ethereum/params"
-	"sort"
 )
 
 var syncStatus bool
-func (bc *BlockChain) checkChainForAttack(blocks types.Blocks) error {
+
+func (bc *BlockChain) checkChainForAttack(blocks types.Blocks, activationBlock uint64) error {
 	// Copyright 2014 The go-ethereum Authors
 	// Copyright 2018 Pirl Sprl
 	// This file is part of the go-ethereum library modified with Pirl Security Protocol.
@@ -33,10 +35,8 @@ func (bc *BlockChain) checkChainForAttack(blocks types.Blocks) error {
 	timeMap := make(map[uint64]int64)
 	tipOfTheMainChain := bc.CurrentBlock().NumberU64()
 
-
-
 	if !syncStatus {
-		if tipOfTheMainChain == blocks[0].NumberU64() - 1 {
+		if tipOfTheMainChain == blocks[0].NumberU64()-1 {
 			//fmt.Println("We are synced")
 			syncStatus = true
 		} else {
@@ -45,8 +45,7 @@ func (bc *BlockChain) checkChainForAttack(blocks types.Blocks) error {
 		}
 	}
 
-
-	if len(blocks) > 0 && bc.CurrentBlock().NumberU64() > uint64(params.ActivationBlock) {
+	if len(blocks) > 0 && bc.CurrentBlock().NumberU64() > activationBlock {
 		if syncStatus && len(blocks) > int(params.PenaltyCheckLength) {
 			for _, b := range blocks {
 				timeMap[b.NumberU64()] = calculatePenaltyTimeForBlock(tipOfTheMainChain, b.NumberU64())
@@ -56,7 +55,7 @@ func (bc *BlockChain) checkChainForAttack(blocks types.Blocks) error {
 	p := make(PairList, len(timeMap))
 	index := 0
 	for k, v := range timeMap {
-		p[index] = Pair {k, v}
+		p[index] = Pair{k, v}
 		index++
 	}
 	sort.Sort(p)
@@ -73,16 +72,16 @@ func (bc *BlockChain) checkChainForAttack(blocks types.Blocks) error {
 	}
 
 	context := []interface{}{
-		"synced", syncStatus, "number", tipOfTheMainChain, "incoming_number", blocks[0].NumberU64() - 1, "penalty", penalty ,"implementation", "$CLO Network + Pirl Team",
+		"synced", syncStatus, "number", tipOfTheMainChain, "incoming_number", blocks[0].NumberU64() - 1, "penalty", penalty, "implementation", "$CLO Network + Pirl Team",
 	}
 
-	log.Info("Checking legitimacy of the chain", context... )
+	log.Info("Checking legitimacy of the chain", context...)
 
 	if penalty > 0 {
 		context := []interface{}{
 			"penalty", penalty,
 		}
-		log.Error("Chain is a malicious and we should reject it", context... )
+		log.Error("Chain is a malicious and we should reject it", context...)
 		err = ErrPenaltyInChain
 	}
 
@@ -93,7 +92,7 @@ func (bc *BlockChain) checkChainForAttack(blocks types.Blocks) error {
 	return err
 }
 
-func calculatePenaltyTimeForBlock(tipOfTheMainChain , incomingBlock uint64) int64 {
+func calculatePenaltyTimeForBlock(tipOfTheMainChain, incomingBlock uint64) int64 {
 	if incomingBlock < tipOfTheMainChain {
 		return int64(tipOfTheMainChain - incomingBlock)
 	}

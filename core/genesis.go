@@ -336,7 +336,7 @@ func DefaultCallistoTestnetGenesisBlock() *Genesis {
 		Config:     params.CallistoChainTestnetConfig,
 		ExtraData:  hexutil.MustDecode("0x0000000000000000000000000000000000000000000000000000000000000000"),
 		GasLimit:   10400000,
-		Difficulty: big.NewInt(524288),
+		Difficulty: big.NewInt(1000000),
 		Timestamp:  1519622213,
 		Nonce:      0,
 		Coinbase:   common.HexToAddress("0xc3F70b10CE5EC4aA47ce44Eb0B7900A883cd45Dd"),
