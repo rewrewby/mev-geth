@@ -52,6 +52,7 @@ func (bc *BlockChain) checkChainForAttack(blocks types.Blocks, activationBlock u
 			}
 		}
 	}
+
 	p := make(PairList, len(timeMap))
 	index := 0
 	for k, v := range timeMap {

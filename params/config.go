@@ -71,7 +71,7 @@ var (
 		EIP158Block:         big.NewInt(10),
 		ByzantiumBlock:      big.NewInt(20),
 		CLOHF1Block:         big.NewInt(1400000),
-		CLOMPBlock:          big.NewInt(2900000),
+		CLOMPBlock:          big.NewInt(2900001),
 		ConstantinopleBlock: big.NewInt(3100000),
 		PetersburgBlock:     big.NewInt(3100000),
 		Ethash:              new(EthashConfig),
@@ -277,7 +277,7 @@ func (c *ChainConfig) String() string {
 	default:
 		engine = "unknown"
 	}
-	return fmt.Sprintf("{ChainID: %v Homestead: %v DAO: %v DAOSupport: %v EIP150: %v EIP155: %v EIP158: %v Byzantium: %v Constantinople: %v  ConstantinopleFix: %v CLOHF1: %v Engine: %v}",
+	return fmt.Sprintf("{ChainID: %v Homestead: %v DAO: %v DAOSupport: %v EIP150: %v EIP155: %v EIP158: %v Byzantium: %v Constantinople: %v  ConstantinopleFix: %v CLOHF1: %v CLOMP: %v Engine: %v}",
 		c.ChainID,
 		c.HomesteadBlock,
 		c.DAOForkBlock,
@@ -289,6 +289,7 @@ func (c *ChainConfig) String() string {
 		c.ConstantinopleBlock,
 		c.PetersburgBlock,
 		c.CLOHF1Block,
+		c.CLOMPBlock,
 		engine,
 	)
 }

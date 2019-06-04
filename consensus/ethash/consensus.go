@@ -648,10 +648,12 @@ func callistoAccumulateRewards(config *params.ChainConfig, state *state.StateDB,
 	blockReward := CLOMinerReward
 	treasuryReward := CLOTreasuryReward
 	stakeReward := CLOStakeReward
+	stakeAddress := CLOStakeAddress
 
 	if config.IsCLOHF1(header.Number) {
 		treasuryReward = CLOHF1TreasuryReward
 		stakeReward = CLOHF1StakeReward
+		stakeAddress = CLOHF1StakeAddress
 	}
 
 	monetaryPolicyStep := big.NewInt(0)
@@ -679,5 +681,5 @@ func callistoAccumulateRewards(config *params.ChainConfig, state *state.StateDB,
 
 	state.AddBalance(header.Coinbase, reward)
 	state.AddBalance(CLOTreasuryAddress, treasuryReward)
-	state.AddBalance(CLOHF1StakeAddress, stakeReward)
+	state.AddBalance(stakeAddress, stakeReward)
 }
