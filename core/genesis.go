@@ -341,7 +341,7 @@ func DefaultCallistoTestnetGenesisBlock() *Genesis {
 		Nonce:      0,
 		Coinbase:   common.HexToAddress("0xc3F70b10CE5EC4aA47ce44Eb0B7900A883cd45Dd"),
 		Mixhash:    common.HexToHash("0x0000000000000000000000000000000000000000000000000000000000000000"),
-		Alloc:      coldStakingAlloc(decodePrealloc(callistoTestnetAllocData)),
+		Alloc:      decodePrealloc(callistoTestnetAllocData),
 	}
 }
 
@@ -420,8 +420,8 @@ func decodePrealloc(data string) GenesisAlloc {
 	return ga
 }
 
-func coldStakingAlloc(ga GenesisAlloc) GenesisAlloc {
-	ga[common.HexToAddress("0xa6199a446edd7a92df19a7c8e46f2fc3da15b3fa")] = GenesisAccount{
-		Balance: big.NewInt(0), Code: []byte(coldStakingCode)}
-	return ga
-}
+// func coldStakingAlloc(ga GenesisAlloc) GenesisAlloc {
+// 	ga[common.HexToAddress("0xa6199a446edd7a92df19a7c8e46f2fc3da15b3fa")] = GenesisAccount{
+// 		Balance: big.NewInt(0), Code: []byte(coldStakingCode)}
+// 	return ga
+// }
