@@ -28,24 +28,28 @@ import (
 )
 
 const (
-	DefaultHTTPHost = "localhost" // Default host interface for the HTTP RPC server
-	DefaultHTTPPort = 8545        // Default TCP port for the HTTP RPC server
-	DefaultWSHost   = "localhost" // Default host interface for the websocket RPC server
-	DefaultWSPort   = 8546        // Default TCP port for the websocket RPC server
+	DefaultHTTPHost    = "localhost" // Default host interface for the HTTP RPC server
+	DefaultHTTPPort    = 8545        // Default TCP port for the HTTP RPC server
+	DefaultWSHost      = "localhost" // Default host interface for the websocket RPC server
+	DefaultWSPort      = 8546        // Default TCP port for the websocket RPC server
+	DefaultGraphQLHost = "localhost" // Default host interface for the GraphQL server
+	DefaultGraphQLPort = 8547        // Default TCP port for the GraphQL server
 )
 
 // DefaultConfig contains reasonable default settings.
 var DefaultConfig = Config{
-	DataDir:          DefaultDataDir(),
-	HTTPPort:         DefaultHTTPPort,
-	HTTPModules:      []string{"net", "web3"},
-	HTTPVirtualHosts: []string{"localhost"},
-	HTTPTimeouts:     rpc.DefaultHTTPTimeouts,
-	WSPort:           DefaultWSPort,
-	WSModules:        []string{"net", "web3"},
+	DataDir:             DefaultDataDir(),
+	HTTPPort:            DefaultHTTPPort,
+	HTTPModules:         []string{"net", "web3"},
+	HTTPVirtualHosts:    []string{"localhost"},
+	HTTPTimeouts:        rpc.DefaultHTTPTimeouts,
+	WSPort:              DefaultWSPort,
+	WSModules:           []string{"net", "web3"},
+	GraphQLPort:         DefaultGraphQLPort,
+	GraphQLVirtualHosts: []string{"localhost"},
 	P2P: p2p.Config{
 		ListenAddr: ":30303",
-		MaxPeers:   25,
+		MaxPeers:   50,
 		NAT:        nat.Any(),
 	},
 }
@@ -66,6 +70,27 @@ func DefaultDataDir() string {
 	}
 	// As we cannot guess a stable location, return empty and handle later
 	return ""
+}
+
+func windowsAppData() string {
+	v := os.Getenv("LOCALAPPDATA")
+	if v == "" {
+		// Windows XP and below don't have LocalAppData. Crash here because
+		// we don't support Windows XP and undefining the variable will cause
+		// other issues.
+		panic("environment variable LocalAppData is undefined")
+	}
+	return v
+}
+
+func isNonEmptyDir(dir string) bool {
+	f, err := os.Open(dir)
+	if err != nil {
+		return false
+	}
+	names, _ := f.Readdir(1)
+	f.Close()
+	return len(names) > 0
 }
 
 func homeDir() string {
