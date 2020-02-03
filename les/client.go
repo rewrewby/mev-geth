@@ -205,7 +205,7 @@ func (s *LightEthereum) APIs() []rpc.API {
 		}, {
 			Namespace: "exp",
 			Version:   "1.0",
-			Service:   downloader.NewPublicDownloaderAPI(s.protocolManager.downloader, s.eventMux),
+			Service:   downloader.NewPublicDownloaderAPI(s.handler.downloader, s.eventMux),
 			Public:    true,
 		}, {
 			Namespace: "exp",

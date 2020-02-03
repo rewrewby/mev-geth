@@ -35,4 +35,8 @@ var (
 
 	// ErrNoGenesis is returned when there is no Genesis Block.
 	ErrNoGenesis = errors.New("genesis not found in chain")
+
+	// ErrPenaltyInChain is returned if the provided chain is not legit and has a penalty value.
+	// In that case the chain must be discarded and peer dropped.
+	ErrPenaltyInChain = errors.New("penalty in chain")
 )

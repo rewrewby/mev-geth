@@ -1603,6 +1603,11 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, er
 		// If there are any still remaining, mark as ignored
 		return it.index, err
 
+	case errChain == ErrPenaltyInChain:
+		stats.ignored += len(it.chain)
+		bc.reportBlock(block, nil, errChain)
+		return it.index, errChain
+
 	// Some other error occurred, abort
 	case err != nil:
 		bc.futureBlocks.Remove(block.Hash())
