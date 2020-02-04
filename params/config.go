@@ -69,7 +69,7 @@ var (
 		PirlGuardBlock: 		 1800000,
 		PirlGuardLength: 		 60,
 
-		IstanbulBlock:       big.NewInt(3000000),
+		IstanbulBlock:       big.NewInt(3050000),
 		MuirGlacierBlock:    nil,
 		Ethash:              new(EthashConfig),
 	}
