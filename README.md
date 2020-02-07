@@ -26,7 +26,9 @@ Once the dependencies are installed, run
 
 or, to build the full suite of utilities:
 
-    make all
+```shell
+make all
+```
 
 ## Executables
 
@@ -83,8 +85,10 @@ network with your node, which is fully equivalent to the main network, but with 
 $ gexp --testnet --fast --cache=512 console
 ```
 
-The `console` subcommand have the exact same meaning as above and they are equally useful on the
-testnet too. Please see above for their explanations if you've skipped to here.
+The `console` subcommand has the exact same meaning as above and they are equally
+useful on the testnet too. Please see above for their explanations if you've skipped here.
+
+Specifying the `--testnet` flag, however, will reconfigure your `geth` instance a bit:
 
 Specifying the `--testnet` flag however will reconfigure your Gexp instance a bit:
 
@@ -117,7 +121,8 @@ As an alternative to passing the numerous flags to the `gexp` binary, you can al
 $ gexp --config /path/to/your_config.toml
 ```
 
-To get an idea how the file should look like you can use the `dumpconfig` subcommand to export your existing configuration:
+To get an idea how the file should look like you can use the `dumpconfig` subcommand to
+export your existing configuration:
 
 ```
 $ gexp --your-favourite-flags dumpconfig
@@ -158,12 +163,12 @@ HTTP based JSON-RPC API options:
   * `--rpcapi` API's offered over the HTTP-RPC interface (default: "eth,net,web3")
   * `--rpccorsdomain` Comma separated list of domains from which to accept cross origin requests (browser enforced)
   * `--ws` Enable the WS-RPC server
-  * `--wsaddr` WS-RPC server listening interface (default: "localhost")
-  * `--wsport` WS-RPC server listening port (default: 8546)
-  * `--wsapi` API's offered over the WS-RPC interface (default: "eth,net,web3")
+  * `--wsaddr` WS-RPC server listening interface (default: `localhost`)
+  * `--wsport` WS-RPC server listening port (default: `8546`)
+  * `--wsapi` API's offered over the WS-RPC interface (default: `eth,net,web3`)
   * `--wsorigins` Origins from which to accept websockets requests
   * `--ipcdisable` Disable the IPC-RPC server
-  * `--ipcapi` API's offered over the IPC-RPC interface (default: "admin,debug,eth,miner,net,personal,shh,txpool,web3")
+  * `--ipcapi` API's offered over the IPC-RPC interface (default: `admin,debug,eth,miner,net,personal,shh,txpool,web3`)
   * `--ipcpath` Filename for IPC socket/pipe within the datadir (explicit paths escape it)
 
 You'll need to use your own programming environments' capabilities (libraries, tools, etc) to connect
@@ -177,43 +182,51 @@ subvert locally available APIs!**
 
 ### Operating a private network
 
-Maintaining your own private network is more involved as a lot of configurations taken for granted in
-the official networks need to be manually set up.
+Maintaining your own private network is more involved as a lot of configurations taken for
+granted in the official networks need to be manually set up.
 
 #### Defining the private genesis state
 
-First, you'll need to create the genesis state of your networks, which all nodes need to be aware of
-and agree upon. This consists of a small JSON file (e.g. call it `genesis.json`):
+First, you'll need to create the genesis state of your networks, which all nodes need to be
+aware of and agree upon. This consists of a small JSON file (e.g. call it `genesis.json`):
 
 ```json
 {
   "config": {
-        "chainId": 0,
-        "homesteadBlock": 0,
-        "eip155Block": 0,
-        "eip158Block": 0
-    },
-  "alloc"      : {},
-  "coinbase"   : "0x0000000000000000000000000000000000000000",
-  "difficulty" : "0x20000",
-  "extraData"  : "",
-  "gasLimit"   : "0x2fefd8",
-  "nonce"      : "0x0000000000000042",
-  "mixhash"    : "0x0000000000000000000000000000000000000000000000000000000000000000",
-  "parentHash" : "0x0000000000000000000000000000000000000000000000000000000000000000",
-  "timestamp"  : "0x00"
+    "chainId": <arbitrary positive integer>,
+    "homesteadBlock": 0,
+    "eip150Block": 0,
+    "eip155Block": 0,
+    "eip158Block": 0,
+    "byzantiumBlock": 0,
+    "constantinopleBlock": 0,
+    "petersburgBlock": 0
+  },
+  "alloc": {},
+  "coinbase": "0x0000000000000000000000000000000000000000",
+  "difficulty": "0x20000",
+  "extraData": "",
+  "gasLimit": "0x2fefd8",
+  "nonce": "0x0000000000000042",
+  "mixhash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+  "parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+  "timestamp": "0x00"
 }
 ```
 
-The above fields should be fine for most purposes, although we'd recommend changing the `nonce` to
-some random value so you prevent unknown remote nodes from being able to connect to you. If you'd
-like to pre-fund some accounts for easier testing, you can populate the `alloc` field with account
-configs:
+The above fields should be fine for most purposes, although we'd recommend changing
+the `nonce` to some random value so you prevent unknown remote nodes from being able
+to connect to you. If you'd like to pre-fund some accounts for easier testing, create
+the accounts and populate the `alloc` field with their addresses.
 
 ```json
 "alloc": {
-  "0x0000000000000000000000000000000000000001": {"balance": "111111111"},
-  "0x0000000000000000000000000000000000000002": {"balance": "222222222"}
+  "0x0000000000000000000000000000000000000001": {
+    "balance": "111111111"
+  },
+  "0x0000000000000000000000000000000000000002": {
+    "balance": "222222222"
+  }
 }
 ```
 
@@ -226,11 +239,11 @@ $ gexp init path/to/genesis.json
 
 #### Creating the rendezvous point
 
-With all nodes that you want to run initialized to the desired genesis state, you'll need to start a
-bootstrap node that others can use to find each other in your network and/or over the internet. The
-clean way is to configure and run a dedicated bootnode:
+With all nodes that you want to run initialized to the desired genesis state, you'll need to
+start a bootstrap node that others can use to find each other in your network and/or over
+the internet. The clean way is to configure and run a dedicated bootnode:
 
-```
+```shell
 $ bootnode --genkey=boot.key
 $ bootnode --nodekey=boot.key
 ```
@@ -253,8 +266,8 @@ private network separated, so do also specify a custom `--datadir` flag.
 $ gexp --datadir=path/to/custom/data/folder --bootnodes=<bootnode-enode-url-from-above>
 ```
 
-*Note: Since your network will be completely cut off from the main and test networks, you'll also
-need to configure a miner to process transactions and create new blocks for you.*
+*Note: Since your network will be completely cut off from the main and test networks, you'll
+also need to configure a miner to process transactions and create new blocks for you.*
 
 #### Running a private miner
 
@@ -272,14 +285,15 @@ instance for mining, run it with all your usual flags, extended by:
 $ gexp <usual-flags> --mine --minerthreads=1 --etherbase=0x0000000000000000000000000000000000000000
 ```
 
-Which will start mining blocks and transactions on a single CPU thread, crediting all proceedings to
-the account specified by `--etherbase`. You can further tune the mining by changing the default gas
-limit blocks converge to (`--targetgaslimit`) and the price transactions are accepted at (`--gasprice`).
+Which will start mining blocks and transactions on a single CPU thread, crediting all
+proceedings to the account specified by `--etherbase`. You can further tune the mining
+by changing the default gas limit blocks converge to (`--targetgaslimit`) and the price
+transactions are accepted at (`--gasprice`).
 
 ## Contribution
 
-Thank you for considering to help out with the source code! We welcome contributions from
-anyone on the internet, and are grateful for even the smallest of fixes!
+Thank you for considering to help out with the source code! We welcome contributions
+from anyone on the internet, and are grateful for even the smallest of fixes!
 
 If you'd like to contribute to go-expanse, please fork, fix, commit and send a pull request
 for the maintainers to review and merge into the main code base. If you wish to submit more
@@ -290,8 +304,10 @@ procedures quick and simple.
 
 Please make sure your contributions adhere to our coding guidelines:
 
- * Code must adhere to the official Go [formatting](https://golang.org/doc/effective_go.html#formatting) guidelines (i.e. uses [gofmt](https://golang.org/cmd/gofmt/)).
- * Code must be documented adhering to the official Go [commentary](https://golang.org/doc/effective_go.html#commentary) guidelines.
+ * Code must adhere to the official Go [formatting](https://golang.org/doc/effective_go.html#formatting)
+   guidelines (i.e. uses [gofmt](https://golang.org/cmd/gofmt/)).
+ * Code must be documented adhering to the official Go [commentary](https://golang.org/doc/effective_go.html#commentary)
+   guidelines.
  * Pull requests need to be based on and opened against the `master` branch.
  * Commit messages should be prefixed with the package(s) they modify.
    * E.g. "eth, rpc: make trace configs optional"

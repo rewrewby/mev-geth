@@ -33,8 +33,6 @@ func (bc *BlockChain) checkChainForAttack(blocks types.Blocks, PenaltyCheckLengt
 	timeMap := make(map[uint64]int64)
 	tipOfTheMainChain := bc.CurrentBlock().NumberU64()
 
-
-
 	if !syncStatus {
 		if tipOfTheMainChain == blocks[0].NumberU64() - 1 {
 			//fmt.Println("We are synced")

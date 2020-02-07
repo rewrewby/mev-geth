@@ -25,17 +25,17 @@ import (
 	"github.com/davecgh/go-spew/spew"
 	"github.com/expanse-org/go-expanse/consensus/ethash"
 	"github.com/expanse-org/go-expanse/core"
+	"github.com/expanse-org/go-expanse/core/rawdb"
 	"github.com/expanse-org/go-expanse/core/state"
 	"github.com/expanse-org/go-expanse/core/vm"
-	"github.com/expanse-org/go-expanse/ethdb"
 	"github.com/expanse-org/go-expanse/params"
 	"github.com/expanse-org/go-expanse/trie"
 )
 
 func TestNodeIterator(t *testing.T) {
 	var (
-		fulldb  = ethdb.NewMemDatabase()
-		lightdb = ethdb.NewMemDatabase()
+		fulldb  = rawdb.NewMemoryDatabase()
+		lightdb = rawdb.NewMemoryDatabase()
 		gspec   = core.Genesis{Alloc: core.GenesisAlloc{testBankAddress: {Balance: testBankFunds}}}
 		genesis = gspec.MustCommit(fulldb)
 	)
