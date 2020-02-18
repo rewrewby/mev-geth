@@ -34,16 +34,15 @@ make all
 
 The go-expanse project comes with several wrappers/executables found in the `cmd` directory.
 
-| Command    | Description |
-|:----------:|-------------|
-| **`gexp`** | Our main Expanse CLI client. It is the entry point into the Expanse network (main-, test- or private net), capable of running as a full node (default), archive node (retaining all historical state) or a light node (retrieving data live). It can be used by other processes as a gateway into the Expanse network via JSON RPC endpoints exposed on top of HTTP, WebSocket and/or IPC transports. `gexp --help` and the [CLI Wiki page](https://github.com/expanse-org/go-expanse/wiki/Command-Line-Options) for command line options. |
-| `abigen` | Source code generator to convert Expanse contract definitions into easy to use, compile-time type-safe Go packages. It operates on plain [Expanse contract ABIs](https://github.com/expanse-org/wiki/wiki/Expanse-Contract-ABI) with expanded functionality if the contract bytecode is also available. However it also accepts Solidity source files, making development much more streamlined. Please see our [Native DApps](https://github.com/expanse-org/go-expanse/wiki/Native-DApps:-Go-bindings-to-Expanse-contracts) wiki page for details. |
-| `bootnode` | Stripped down version of our Expanse client implementation that only takes part in the network node discovery protocol, but does not run any of the higher level application protocols. It can be used as a lightweight bootstrap node to aid in finding peers in private networks. |
-| `evm` | Developer utility version of the EVM (Expanse Virtual Machine) that is capable of running bytecode snippets within a configurable environment and execution mode. Its purpose is to allow isolated, fine-grained debugging of EVM opcodes (e.g. `evm --code 60ff60ff --debug`). |
-| `gexprpctest` | Developer utility tool to support our [ethereum/rpc-test](https://github.com/ethereum/rpc-tests) test suite which validates baseline conformity to the [Expanse JSON RPC](https://github.com/ethereum/wiki/wiki/JSON-RPC) specs. Please see the [test suite's readme](https://github.com/ethereum/rpc-tests/blob/master/README.md) for details. |
-| `rlpdump` | Developer utility tool to convert binary RLP ([Recursive Length Prefix](https://github.com/ethereum/wiki/wiki/RLP)) dumps (data encoding used by the Expanse protocol both network as well as consensus wise) to user friendlier hierarchical representation (e.g. `rlpdump --hex CE0183FFFFFFC4C304050583616263`). |
-| `swarm`    | Swarm daemon and tools. This is the entrypoint for the Swarm network. `swarm --help` for command line options and subcommands. See [Swarm README](https://github.com/expanse-org/go-expanse/tree/master/swarm) for more information. |
-| `puppeth`    | a CLI wizard that aids in creating a new Expanse network. |
+|    Command    | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| :-----------: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|  **`gexp`**   | Our main Expanse CLI client. It is the entry point into the Expanse network (main-, test- or private net), capable of running as a full node (default), archive node (retaining all historical state) or a light node (retrieving data live). It can be used by other processes as a gateway into the Expanse network via JSON RPC endpoints exposed on top of HTTP, WebSocket and/or IPC transports. `gexp --help` and the [CLI Wiki page](https://github.com/expanse-org/go-expanse/wiki/Command-Line-Options) for command line options.          |
+|   `abigen`    | Source code generator to convert Expanse contract definitions into easy to use, compile-time type-safe Go packages. It operates on plain [Expanse contract ABIs](https://github.com/expanse/wiki/wiki/Expanse-Contract-ABI) with expanded functionality if the contract bytecode is also available. However, it also accepts Solidity source files, making development much more streamlined. Please see our [Native DApps](https://github.com/expanse-org/go-expanse/wiki/Native-DApps:-Go-bindings-to-Expanse-contracts) wiki page for details. |
+|  `bootnode`   | Stripped down version of our Expanse client implementation that only takes part in the network node discovery protocol, but does not run any of the higher level application protocols. It can be used as a lightweight bootstrap node to aid in finding peers in private networks.                                                                                                                                                                                                                                                                 |
+|     `evm`     | Developer utility version of the EVM (Expanse Virtual Machine) that is capable of running bytecode snippets within a configurable environment and execution mode. Its purpose is to allow isolated, fine-grained debugging of EVM opcodes (e.g. `evm --code 60ff60ff --debug run`).                                                                                                                                                                                                                                                                     |
+| `gexprpctest` | Developer utility tool to support our [expanse/rpc-test](https://github.com/expanse/rpc-tests) test suite which validates baseline conformity to the [Expanse JSON RPC](https://github.com/expanse/wiki/wiki/JSON-RPC) specs. Please see the [test suite's readme](https://github.com/expanse/rpc-tests/blob/master/README.md) for details.                                                                                                                                                                                                     |
+|   `rlpdump`   | Developer utility tool to convert binary RLP ([Recursive Length Prefix](https://github.com/expanse/wiki/wiki/RLP)) dumps (data encoding used by the Expanse protocol both network as well as consensus wise) to user-friendlier hierarchical representation (e.g. `rlpdump --hex CE0183FFFFFFC4C304050583616263`).                                                                                                                                                                                                                                 |
+|   `puppeth`   | a CLI wizard that aids in creating a new Expanse network.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 
 ## Running gexp
 
@@ -69,7 +68,7 @@ This command will:
    download more data in exchange for avoiding processing the entire history of the Expanse network,
    which is very CPU intensive.
  * Start up gexp's built-in interactive [JavaScript console](https://github.com/expanse-org/go-expanse/wiki/JavaScript-Console),
-   (via the trailing `console` subcommand) through which you can invoke all official [`web3` methods](https://github.com/ethereum/wiki/wiki/JavaScript-API)
+   (via the trailing `console` subcommand) through which you can invoke all official [`web3` methods](https://github.com/expanse/wiki/wiki/JavaScript-API)
    as well as Gexp's own [management APIs](https://github.com/expanse-org/go-expanse/wiki/Management-APIs).
    This tool is optional and if you leave it out you can always attach to an already running Gexp instance
    with `gexp attach`.
@@ -88,7 +87,7 @@ $ gexp --testnet --fast --cache=512 console
 The `console` subcommand has the exact same meaning as above and they are equally
 useful on the testnet too. Please see above for their explanations if you've skipped here.
 
-Specifying the `--testnet` flag, however, will reconfigure your `geth` instance a bit:
+Specifying the `--testnet` flag, however, will reconfigure your `gexp` instance a bit:
 
 Specifying the `--testnet` flag however will reconfigure your Gexp instance a bit:
 
@@ -107,7 +106,7 @@ separate the two networks and will not make any accounts available between them.
 
 ### Full node on the Rinkeby test network
 
-The above test network is a cross client one based on the ethash proof-of-work consensus algorithm. As such, it has certain extra overhead and is more susceptible to reorganization attacks due to the network's low difficulty / security. Go Expanse also supports connecting to a proof-of-authority based test network called [*Rinkeby*](https://www.rinkeby.io) (operated by members of the community). This network is lighter, more secure, but is only supported by go-ethereum.
+The above test network is a cross client one based on the ethash proof-of-work consensus algorithm. As such, it has certain extra overhead and is more susceptible to reorganization attacks due to the network's low difficulty / security. Go Expanse also supports connecting to a proof-of-authority based test network called [*Rinkeby*](https://www.rinkeby.io) (operated by members of the community). This network is lighter, more secure, but is only supported by go-expanse.
 
 ```
 $ gexp --rinkeby console

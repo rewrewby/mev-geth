@@ -16,6 +16,8 @@
 
 package params
 
+import "github.com/expanse-org/go-expanse/common"
+
 // MainnetBootnodes are the enode URLs of the P2P bootstrap nodes running on
 // the main Ethereum network.
 var MainnetBootnodes = []string{
@@ -63,11 +65,22 @@ var GoerliBootnodes = []string{
 	"enode://f4a9c6ee28586009fb5a96c8af13a58ed6d8315a9eee4772212c1d4d9cebe5a8b8a78ea4434f318726317d04a3f531a1ef0420cf9752605a562cfe858c46e263@213.186.16.82:30303",
 
 	// Ethereum Foundation bootnode
-	"enode://573b6607cd59f241e30e4c4943fd50e99e2b6f42f9bd5ca111659d309c06741247f4f1e93843ad3e8c8c18b6e2d94c161b7ef67479b3938780a97134b618b5ce@52.56.136.200:30303",
+	"enode://a61215641fb8714a373c80edbfa0ea8878243193f57c96eeb44d0bc019ef295abd4e044fd619bfc4c59731a73fb79afe84e9ab6da0c743ceb479cbb6d263fa91@3.11.147.67:30303",
 }
 
 // DiscoveryV5Bootnodes are the enode URLs of the P2P bootstrap nodes for the
 // experimental RLPx v5 topic-discovery network.
 var DiscoveryV5Bootnodes = []string{
 
+}
+
+const dnsPrefix = "enrtree://AKA3AM6LPBYEUDMVNU3BSVQJ5AD45Y7YPOHJLEF6W26QOE4VTUDPE@"
+
+// These DNS names provide bootstrap connectivity for public testnets and the mainnet.
+// See https://github.com/ethereum/discv4-dns-lists for more information.
+var KnownDNSNetworks = map[common.Hash]string{
+	MainnetGenesisHash: dnsPrefix + "all.mainnet.ethdisco.net",
+	TestnetGenesisHash: dnsPrefix + "all.ropsten.ethdisco.net",
+	RinkebyGenesisHash: dnsPrefix + "all.rinkeby.ethdisco.net",
+	GoerliGenesisHash:  dnsPrefix + "all.goerli.ethdisco.net",
 }
