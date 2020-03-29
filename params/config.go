@@ -87,7 +87,7 @@ var (
 		CLOMPBlock:          big.NewInt(2900001),
 		ConstantinopleBlock: big.NewInt(3100000),
 		PetersburgBlock:     big.NewInt(3100000),
-		IstanbulBlock:		 big.NewInt(4800000),
+		IstanbulBlock:		 big.NewInt(4950000),
 		Ethash:              new(EthashConfig),
 	}
 
