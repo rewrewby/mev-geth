@@ -18,9 +18,8 @@ For prerequisites and detailed build instructions please read the
 [Installation Instructions](https://github.com/expanse-org/go-expanse/wiki/Building-Expanse)
 on the wiki.
 
-Building gexp requires both a Go (version 1.9 or later) and a C compiler.
-You can install them using your favourite package manager.
-Once the dependencies are installed, run
+Building `gexp` requires both a Go (version 1.13 or later) and a C compiler. You can install
+them using your favorite package manager. Once the dependencies are installed, run
 
     make gexp
 
@@ -63,33 +62,42 @@ $ gexp --fast --cache=512 console
 ```
 
 This command will:
+ * Start `gexp` in fast sync mode (default, can be changed with the `--syncmode` flag),
+   causing it to download more data in exchange for avoiding processing the entire history
+   of the Expanse network, which is very CPU intensive.
+ * Start up `gexp`'s built-in interactive [JavaScript console](https://github.com/expanse-org/go-expanse/wiki/JavaScript-Console),
+   (via the trailing `console` subcommand) through which you can invoke all official [`web3` methods](https://github.com/ethereum/wiki/wiki/JavaScript-API)
+   as well as `gexp`'s own [management APIs](https://github.com/expanse-org/go-expanse/wiki/Management-APIs).
+   This tool is optional and if you leave it out you can always attach to an already running
+   `geth` instance with `geth attach`.
 
- * Start gexp in fast sync mode (default, can be changed with the `--syncmode` flag), causing it to
-   download more data in exchange for avoiding processing the entire history of the Expanse network,
-   which is very CPU intensive.
- * Start up gexp's built-in interactive [JavaScript console](https://github.com/expanse-org/go-expanse/wiki/JavaScript-Console),
-   (via the trailing `console` subcommand) through which you can invoke all official [`web3` methods](https://github.com/expanse/wiki/wiki/JavaScript-API)
-   as well as Gexp's own [management APIs](https://github.com/expanse-org/go-expanse/wiki/Management-APIs).
-   This tool is optional and if you leave it out you can always attach to an already running Gexp instance
-   with `gexp attach`.
+### A Full node on the Görli test network
 
-### Full node on the Expanse test network
+Transitioning towards developers, if you'd like to play around with creating Ethereum
+contracts, you almost certainly would like to do that without any real money involved until
+you get the hang of the entire system. In other words, instead of attaching to the main
+network, you want to join the **test** network with your node, which is fully equivalent to
+the main network, but with play-Ether only.
 
-Transitioning towards developers, if you'd like to play around with creating Expanse contracts, you
-almost certainly would like to do that without any real money involved until you get the hang of the
-entire system. In other words, instead of attaching to the main network, you want to join the **test**
-network with your node, which is fully equivalent to the main network, but with play-Ether only.
-
-```
-$ gexp --testnet --fast --cache=512 console
+```shell
+$ gexp --goerli console
 ```
 
 The `console` subcommand has the exact same meaning as above and they are equally
-useful on the testnet too. Please see above for their explanations if you've skipped here.
+useful on the testnet too. Please, see above for their explanations if you've skipped here.
 
-Specifying the `--testnet` flag, however, will reconfigure your `gexp` instance a bit:
+Specifying the `--goerli` flag, however, will reconfigure your `gexp` instance a bit:
 
-Specifying the `--testnet` flag however will reconfigure your Gexp instance a bit:
+ * Instead of connecting the main Expanse network, the client will connect to the Görli
+   test network, which uses different P2P bootnodes, different network IDs and genesis
+   states.
+ * Instead of using the default data directory (`~/.expanse` on Linux for example), `gexp`
+   will nest itself one level deeper into a `goerli` subfolder (`~/.expanse/goerli` on
+   Linux). Note, on OSX and Linux this also means that attaching to a running testnet node
+   requires the use of a custom endpoint since `gexp attach` will try to attach to a
+   production node endpoint by default, e.g.,
+   `gexp attach <datadir>/goerli/gexp.ipc`. Windows users are not affected by
+   this.
 
  * Instead of using the default data directory (`~/.expanse` on Linux for example), Gexp will nest
    itself one level deeper into a `testnet` subfolder (`~/.expanse/testnet` on Linux). Note, on OSX
@@ -106,11 +114,25 @@ separate the two networks and will not make any accounts available between them.
 
 ### Full node on the Rinkeby test network
 
-The above test network is a cross client one based on the ethash proof-of-work consensus algorithm. As such, it has certain extra overhead and is more susceptible to reorganization attacks due to the network's low difficulty / security. Go Expanse also supports connecting to a proof-of-authority based test network called [*Rinkeby*](https://www.rinkeby.io) (operated by members of the community). This network is lighter, more secure, but is only supported by go-expanse.
+Go Expanse also supports connecting to the older proof-of-authority based test network
+called [*Rinkeby*](https://www.rinkeby.io) which is operated by members of the community.
 
 ```
 $ gexp --rinkeby console
 ```
+
+### Full node on the Ropsten test network
+
+In addition to Görli and Rinkeby, Geth also supports the ancient Ropsten testnet. The
+Ropsten test network is based on the Ethash proof-of-work consensus algorithm. As such,
+it has certain extra overhead and is more susceptible to reorganization attacks due to the
+network's low difficulty/security.
+
+```shell
+$ geth --ropsten console
+```
+
+*Note: Older Geth configurations store the Ropsten database in the `testnet` subdirectory.*
 
 ### Configuration
 
@@ -199,7 +221,8 @@ aware of and agree upon. This consists of a small JSON file (e.g. call it `genes
     "eip158Block": 0,
     "byzantiumBlock": 0,
     "constantinopleBlock": 0,
-    "petersburgBlock": 0
+    "petersburgBlock": 0,
+    "istanbulBlock": 0
   },
   "alloc": {},
   "coinbase": "0x0000000000000000000000000000000000000000",
