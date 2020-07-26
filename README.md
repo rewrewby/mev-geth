@@ -4,7 +4,7 @@ Official golang implementation of the Expanse protocol.
 
 [![API Reference](
 https://camo.githubusercontent.com/915b7be44ada53c290eb157634330494ebe3e30a/68747470733a2f2f676f646f632e6f72672f6769746875622e636f6d2f676f6c616e672f6764646f3f7374617475732e737667
-)](https://godoc.org/github.com/expanse-org/go-expanse)
+)](https://pkg.go.dev/github.com/expanse-org/go-expanse?tab=doc)
 [![Go Report Card](https://goreportcard.com/badge/github.com/expanse-org/go-expanse)](https://goreportcard.com/report/github.com/expanse-org/go-expanse)
 [![Travis](https://travis-ci.org/expanse-org/go-expanse.svg?branch=master)](https://travis-ci.org/expanse-org/go-expanse)
 [![Discord](https://img.shields.io/badge/discord-join%20chat-blue.svg)](https://discord.me/expanse)
@@ -163,7 +163,9 @@ docker run -d --name expanse-node -v /Users/alice/expanse:/root \
 
 This will start gexp in fast sync mode with a DB memory allowance of 512MB just as the above command does.  It will also create a persistent volume in your home directory for saving your blockchain as well as map the default ports. There is also an `alpine` tag available for a slim version of the image.
 
-### Pragmatically interfacing Gexp nodes
+Do not forget `--http.addr 0.0.0.0`, if you want to access RPC from other containers
+and/or hosts. By default, `gexp` binds to the local interface and RPC endpoints is not
+accessible from the outside.
 
 As a developer, sooner rather than later you'll want to start interacting with Gexp and the Expanse
 network via your own programs and not manually through the console. To aid this, Gexp has built in
@@ -178,16 +180,16 @@ These can be turned on/off and configured as you'd expect.
 
 HTTP based JSON-RPC API options:
 
-  * `--rpc` Enable the HTTP-RPC server
-  * `--rpcaddr` HTTP-RPC server listening interface (default: "localhost")
-  * `--rpcport` HTTP-RPC server listening port (default: 9656)
-  * `--rpcapi` API's offered over the HTTP-RPC interface (default: "eth,net,web3")
-  * `--rpccorsdomain` Comma separated list of domains from which to accept cross origin requests (browser enforced)
+  * `--http` Enable the HTTP-RPC server
+  * `--http.addr` HTTP-RPC server listening interface (default: `localhost`)
+  * `--http.port` HTTP-RPC server listening port (default: `8545`)
+  * `--http.api` API's offered over the HTTP-RPC interface (default: `eth,net,web3`)
+  * `--http.corsdomain` Comma separated list of domains from which to accept cross origin requests (browser enforced)
   * `--ws` Enable the WS-RPC server
-  * `--wsaddr` WS-RPC server listening interface (default: `localhost`)
-  * `--wsport` WS-RPC server listening port (default: `8546`)
-  * `--wsapi` API's offered over the WS-RPC interface (default: `eth,net,web3`)
-  * `--wsorigins` Origins from which to accept websockets requests
+  * `--ws.addr` WS-RPC server listening interface (default: `localhost`)
+  * `--ws.port` WS-RPC server listening port (default: `8546`)
+  * `--ws.api` API's offered over the WS-RPC interface (default: `eth,net,web3`)
+  * `--ws.origins` Origins from which to accept websockets requests
   * `--ipcdisable` Disable the IPC-RPC server
   * `--ipcapi` API's offered over the IPC-RPC interface (default: `admin,debug,eth,miner,net,personal,shh,txpool,web3`)
   * `--ipcpath` Filename for IPC socket/pipe within the datadir (explicit paths escape it)
