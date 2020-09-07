@@ -16,7 +16,7 @@ jobs:
     - stage: lint
       os: linux
       dist: xenial
-      go: 1.14.x
+      go: 1.15.x
       env:
         - lint
       git:
@@ -34,12 +34,22 @@ jobs:
         - go run build/ci.go install
         - go run build/ci.go test -coverage $TEST_PACKAGES
 
+    - stage: build
+      os: linux
+      dist: xenial
+      go: 1.14.x
+      env:
+        - GO111MODULE=on
+      script:
+        - go run build/ci.go install
+        - go run build/ci.go test -coverage $TEST_PACKAGES
+
     # These are the latest Go versions.
     - stage: build
       os: linux
       arch: amd64
       dist: xenial
-      go: 1.14.x
+      go: 1.15.x
       env:
         - GO111MODULE=on
       script:
@@ -51,7 +61,7 @@ jobs:
       os: linux
       arch: arm64
       dist: xenial
-      go: 1.14.x
+      go: 1.15.x
       env:
         - GO111MODULE=on
       script:
@@ -61,7 +71,7 @@ jobs:
     - stage: build
       os: osx
       osx_image: xcode11.3
-      go: 1.14.x
+      go: 1.15.x
       env:
         - GO111MODULE=on
       script:

@@ -34,6 +34,7 @@ import (
 	"github.com/expanse-org/go-expanse/crypto"
 	"github.com/expanse-org/go-expanse/event"
 	"github.com/expanse-org/go-expanse/params"
+	"github.com/expanse-org/go-expanse/trie"
 )
 
 // testTxPoolConfig is a transaction pool configuration without stateful disk
@@ -54,7 +55,7 @@ type testBlockChain struct {
 func (bc *testBlockChain) CurrentBlock() *types.Block {
 	return types.NewBlock(&types.Header{
 		GasLimit: bc.gasLimit,
-	}, nil, nil, nil)
+	}, nil, nil, nil, new(trie.Trie))
 }
 
 func (bc *testBlockChain) GetBlock(hash common.Hash, number uint64) *types.Block {
