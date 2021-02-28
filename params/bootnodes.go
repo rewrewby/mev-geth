@@ -84,7 +84,7 @@ var CallistoBootnodes = []string{
 }
 
 var CallistoTestnetBootnodes = []string{
-	"enode://ba82fe4d5d984843489dd04281fabf687989a40b9e29596fad4387780a79a7c8004fe7b0ed9b82bbc461f07e47bf0040e79701dadc3230f56928ae87bde6c8bb@51.89.6.152:30303",
+	"enode://ba82fe4d5d984843489dd04281fabf687989a40b9e29596fad4387780a79a7c8004fe7b0ed9b82bbc461f07e47bf0040e79701dadc3230f56928ae87bde6c8bb@51.89.6.152:33333",
 }
 
 // YoloV1Bootnodes are the enode URLs of the P2P bootstrap nodes running on the
