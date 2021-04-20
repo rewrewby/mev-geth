@@ -148,7 +148,7 @@ type worker struct {
 	// Channels
 	newWorkCh          chan *newWorkReq
 	taskCh             chan *task
-	resultCh           chan types.SealResult
+	resultCh           chan *types.Block
 	startCh            chan struct{}
 	exitCh             chan struct{}
 	resubmitIntervalCh chan time.Duration
@@ -234,7 +234,7 @@ func newWorker(config *Config, chainConfig *params.ChainConfig, engine consensus
 		chainSideCh:        make(chan core.ChainSideEvent, chainSideChanSize),
 		newWorkCh:          make(chan *newWorkReq),
 		taskCh:             taskCh,
-		resultCh:           make(chan types.SealResult, resultQueueSize),
+		resultCh:           make(chan *types.Block, resultQueueSize),
 		exitCh:             exitCh,
 		startCh:            make(chan struct{}, 1),
 		resubmitIntervalCh: make(chan time.Duration),
@@ -628,8 +628,7 @@ func (w *worker) taskLoop() {
 func (w *worker) resultLoop() {
 	for {
 		select {
-		case result := <-w.resultCh:
-			block := result.Block
+		case block := <-w.resultCh:
 			// Short circuit when receiving empty result.
 			if block == nil {
 				continue
@@ -639,14 +638,9 @@ func (w *worker) resultLoop() {
 				continue
 			}
 			var (
-				sealhash common.Hash
+				sealhash = w.engine.SealHash(block.Header())
 				hash     = block.Hash()
 			)
-			if result.SealHash != nil {
-				sealhash = *result.SealHash
-			} else {
-				sealhash = w.engine.SealHash(block.Header())
-			}
 			w.pendingMu.RLock()
 			task, exist := w.pendingTasks[sealhash]
 			w.pendingMu.RUnlock()
@@ -674,10 +668,6 @@ func (w *worker) resultLoop() {
 				}
 				logs = append(logs, receipt.Logs...)
 			}
-
-			// Broadcast the block and announce chain insertion event
-			w.mux.Post(core.NewMinedBlockEvent{Block: block})
-
 			// Commit block and state to database.
 			_, err := w.chain.WriteBlockWithState(block, receipts, logs, task.state, true)
 			if err != nil {
@@ -686,6 +676,9 @@ func (w *worker) resultLoop() {
 			}
 			log.Info("Successfully sealed new block", "number", block.Number(), "sealhash", sealhash, "hash", hash,
 				"elapsed", common.PrettyDuration(time.Since(task.createdAt)))
+
+			// Broadcast the block and announce chain insertion event
+			w.mux.Post(core.NewMinedBlockEvent{Block: block})
 
 			// Insert the block into the set of pending ones to resultLoop for confirmations
 			w.unconfirmed.Insert(block.NumberU64(), block.Hash())
@@ -1246,6 +1239,7 @@ func (w *worker) computeBundleGas(bundle types.Transactions, parent *types.Block
 
 	var totalGasUsed uint64 = 0
 	var tempGasUsed uint64
+	gasFees := new(big.Int)
 
 	coinbaseBalanceBefore := env.state.GetBalance(w.coinbase)
 
@@ -1254,14 +1248,17 @@ func (w *worker) computeBundleGas(bundle types.Transactions, parent *types.Block
 		if err != nil {
 			return nil, 0, err
 		}
+		if receipt.Status == types.ReceiptStatusFailed {
+			return nil, 0, errors.New("revert")
+		}
+
 		totalGasUsed += receipt.GasUsed
+		gasFees.Add(gasFees, new(big.Int).Mul(big.NewInt(int64(totalGasUsed)), tx.GasPrice()))
 	}
 	coinbaseBalanceAfter := env.state.GetBalance(w.coinbase)
-	coinbaseDiff := new(big.Int).Sub(coinbaseBalanceAfter, coinbaseBalanceBefore)
-	totalEth := new(big.Int)
-	totalEth.Add(totalEth, coinbaseDiff)
+	coinbaseDiff := new(big.Int).Sub(new(big.Int).Sub(coinbaseBalanceAfter, gasFees), coinbaseBalanceBefore)
 
-	return totalEth, totalGasUsed, nil
+	return coinbaseDiff, totalGasUsed, nil
 }
 
 // copyReceipts makes a deep copy of the given receipts.
