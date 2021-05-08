@@ -28,12 +28,12 @@ import (
 // Genesis hashes to enforce below configs on.
 var (
 	MainnetGenesisHash         = common.HexToHash("0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3")
-    RopstenGenesisHash         = common.HexToHash("0x41941023680923e0fe4d74a34bdac8141f2540e3ae90623718e47d66d1ca4a2d")
+	RopstenGenesisHash         = common.HexToHash("0x41941023680923e0fe4d74a34bdac8141f2540e3ae90623718e47d66d1ca4a2d")
 	RinkebyGenesisHash         = common.HexToHash("0x6341fd3daf94b748c72ced5a5b26028f2474f5f00d824504e4fa37a75767e177")
 	CallistoGenesisHash        = common.HexToHash("0x82270b80fc90beb005505a9ef95039639968a0e81b2904ad30128c93d713d2c4")
 	CallistoTestnetGenesisHash = common.HexToHash("0xf569c91b567aaa979b4d74de0c7431e938e2057df1cffd527a87ecf0af5fbecf")
 	GoerliGenesisHash          = common.HexToHash("0xbf7e331f7f7c1dd2e05159666b3bf8bc7a8a3a9eb1d518969eab529dd9b88c1a")
-	YoloV1GenesisHash 		   = common.HexToHash("0xc3fd235071f24f93865b0850bd2a2119b30f7224d18a0e34c7bbf549ad7e3d36")
+	YoloV1GenesisHash          = common.HexToHash("0xc3fd235071f24f93865b0850bd2a2119b30f7224d18a0e34c7bbf549ad7e3d36")
 )
 
 // TrustedCheckpoints associates each known checkpoint with the genesis hash of
@@ -86,6 +86,7 @@ var (
 		ByzantiumBlock:      big.NewInt(20),
 		CLOHF1Block:         big.NewInt(1400000),
 		CLOMPBlock:          big.NewInt(2900001),
+		CSV2Block:           big.NewInt(7600000),
 		ConstantinopleBlock: big.NewInt(3100000),
 		PetersburgBlock:     big.NewInt(3100000),
 		IstanbulBlock:       big.NewInt(4950000),
@@ -105,6 +106,7 @@ var (
 		ByzantiumBlock:      big.NewInt(20),
 		CLOHF1Block:         big.NewInt(1000),
 		CLOMPBlock:          big.NewInt(1500),
+		CSV2Block:           big.NewInt(185000),
 		ConstantinopleBlock: big.NewInt(2000),
 		PetersburgBlock:     big.NewInt(2000),
 		IstanbulBlock:       big.NewInt(3000),
@@ -279,18 +281,18 @@ var (
 	//
 	// This configuration is intentionally not using keyed fields to force anyone
 	// adding flags to the config to also have to set these fields.
-	AllEthashProtocolChanges = &ChainConfig{big.NewInt(1337), big.NewInt(0), nil, false, big.NewInt(0), common.Hash{}, big.NewInt(0), big.NewInt(0), big.NewInt(0), big.NewInt(0), big.NewInt(0), big.NewInt(0), nil, nil, nil, nil, nil, new(EthashConfig), nil}
+	AllEthashProtocolChanges = &ChainConfig{big.NewInt(1337), big.NewInt(0), nil, false, big.NewInt(0), common.Hash{}, big.NewInt(0), big.NewInt(0), big.NewInt(0), big.NewInt(0), big.NewInt(0), big.NewInt(0), nil, nil, nil, nil, nil, nil, new(EthashConfig), nil}
 
 	// AllCliqueProtocolChanges contains every protocol change (EIPs) introduced
 	// and accepted by the Ethereum core developers into the Clique consensus.
 	//
 	// This configuration is intentionally not using keyed fields to force anyone
 	// adding flags to the config to also have to set these fields.
-	AllCliqueProtocolChanges = &ChainConfig{big.NewInt(1337), big.NewInt(0), nil, false, big.NewInt(0), common.Hash{}, big.NewInt(0), big.NewInt(0), big.NewInt(0), big.NewInt(0), big.NewInt(0), big.NewInt(0), nil, nil, nil, nil, nil, nil, &CliqueConfig{Period: 0, Epoch: 30000}}
+	AllCliqueProtocolChanges = &ChainConfig{big.NewInt(1337), big.NewInt(0), nil, false, big.NewInt(0), common.Hash{}, big.NewInt(0), big.NewInt(0), big.NewInt(0), big.NewInt(0), big.NewInt(0), big.NewInt(0), nil, nil, nil, nil, nil, nil, nil, &CliqueConfig{Period: 0, Epoch: 30000}}
 
-	TestChainConfig = &ChainConfig{big.NewInt(1), big.NewInt(0), nil, false, big.NewInt(0), common.Hash{}, big.NewInt(0), big.NewInt(0), big.NewInt(0), big.NewInt(0), big.NewInt(0), big.NewInt(0), nil, nil, nil, nil, nil,new(EthashConfig), nil}
+	TestChainConfig = &ChainConfig{big.NewInt(1), big.NewInt(0), nil, false, big.NewInt(0), common.Hash{}, big.NewInt(0), big.NewInt(0), big.NewInt(0), big.NewInt(0), big.NewInt(0), big.NewInt(0), nil, nil, nil, nil, nil, nil, new(EthashConfig), nil}
 
-	TestRules       = TestChainConfig.Rules(new(big.Int))
+	TestRules = TestChainConfig.Rules(new(big.Int))
 )
 
 // TrustedCheckpoint represents a set of post-processed trie roots (CHT and
@@ -366,6 +368,7 @@ type ChainConfig struct {
 
 	CLOHF1Block *big.Int `json:"clohf1Block,omitempty"` // Callisto Hardfork 1 block
 	CLOMPBlock  *big.Int `json:"cloMPBlock,omitempty"`
+	CSV2Block   *big.Int `json:"csv2Block,omitempty"`
 
 	// Various consensus engines
 	Ethash *EthashConfig `json:"ethash,omitempty"`
@@ -492,6 +495,11 @@ func (c *ChainConfig) IsCLOHF1(num *big.Int) bool {
 // IsCLOMP returns whether num represents a block number after the Callisto Monetary Policy fork
 func (c *ChainConfig) IsCLOMP(num *big.Int) bool {
 	return isForked(c.CLOMPBlock, num)
+}
+
+// IsCSV2 returns whether num represents a block number after the Callisto hard fork changing CS address to v2
+func (c *ChainConfig) IsCSV2(num *big.Int) bool {
+	return isForked(c.CSV2Block, num)
 }
 
 // CheckCompatible checks whether scheduled fork transitions have been imported
