@@ -4,7 +4,7 @@ Official golang implementation of the Expanse protocol.
 
 [![API Reference](
 https://camo.githubusercontent.com/915b7be44ada53c290eb157634330494ebe3e30a/68747470733a2f2f676f646f632e6f72672f6769746875622e636f6d2f676f6c616e672f6764646f3f7374617475732e737667
-)](https://godoc.org/github.com/expanse-org/go-expanse)
+)](https://pkg.go.dev/github.com/expanse-org/go-expanse?tab=doc)
 [![Go Report Card](https://goreportcard.com/badge/github.com/expanse-org/go-expanse)](https://goreportcard.com/report/github.com/expanse-org/go-expanse)
 [![Travis](https://travis-ci.org/expanse-org/go-expanse.svg?branch=master)](https://travis-ci.org/expanse-org/go-expanse)
 [![Discord](https://img.shields.io/badge/discord-join%20chat-blue.svg)](https://discord.me/expanse)
@@ -18,9 +18,8 @@ For prerequisites and detailed build instructions please read the
 [Installation Instructions](https://github.com/expanse-org/go-expanse/wiki/Building-Expanse)
 on the wiki.
 
-Building gexp requires both a Go (version 1.9 or later) and a C compiler.
-You can install them using your favourite package manager.
-Once the dependencies are installed, run
+Building `gexp` requires both a Go (version 1.13 or later) and a C compiler. You can install
+them using your favorite package manager. Once the dependencies are installed, run
 
     make gexp
 
@@ -34,16 +33,15 @@ make all
 
 The go-expanse project comes with several wrappers/executables found in the `cmd` directory.
 
-| Command    | Description |
-|:----------:|-------------|
-| **`gexp`** | Our main Expanse CLI client. It is the entry point into the Expanse network (main-, test- or private net), capable of running as a full node (default), archive node (retaining all historical state) or a light node (retrieving data live). It can be used by other processes as a gateway into the Expanse network via JSON RPC endpoints exposed on top of HTTP, WebSocket and/or IPC transports. `gexp --help` and the [CLI Wiki page](https://github.com/expanse-org/go-expanse/wiki/Command-Line-Options) for command line options. |
-| `abigen` | Source code generator to convert Expanse contract definitions into easy to use, compile-time type-safe Go packages. It operates on plain [Expanse contract ABIs](https://github.com/expanse-org/wiki/wiki/Expanse-Contract-ABI) with expanded functionality if the contract bytecode is also available. However it also accepts Solidity source files, making development much more streamlined. Please see our [Native DApps](https://github.com/expanse-org/go-expanse/wiki/Native-DApps:-Go-bindings-to-Expanse-contracts) wiki page for details. |
-| `bootnode` | Stripped down version of our Expanse client implementation that only takes part in the network node discovery protocol, but does not run any of the higher level application protocols. It can be used as a lightweight bootstrap node to aid in finding peers in private networks. |
-| `evm` | Developer utility version of the EVM (Expanse Virtual Machine) that is capable of running bytecode snippets within a configurable environment and execution mode. Its purpose is to allow isolated, fine-grained debugging of EVM opcodes (e.g. `evm --code 60ff60ff --debug`). |
-| `gexprpctest` | Developer utility tool to support our [ethereum/rpc-test](https://github.com/ethereum/rpc-tests) test suite which validates baseline conformity to the [Expanse JSON RPC](https://github.com/ethereum/wiki/wiki/JSON-RPC) specs. Please see the [test suite's readme](https://github.com/ethereum/rpc-tests/blob/master/README.md) for details. |
-| `rlpdump` | Developer utility tool to convert binary RLP ([Recursive Length Prefix](https://github.com/ethereum/wiki/wiki/RLP)) dumps (data encoding used by the Expanse protocol both network as well as consensus wise) to user friendlier hierarchical representation (e.g. `rlpdump --hex CE0183FFFFFFC4C304050583616263`). |
-| `swarm`    | Swarm daemon and tools. This is the entrypoint for the Swarm network. `swarm --help` for command line options and subcommands. See [Swarm README](https://github.com/expanse-org/go-expanse/tree/master/swarm) for more information. |
-| `puppeth`    | a CLI wizard that aids in creating a new Expanse network. |
+|    Command    | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| :-----------: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|  **`gexp`**   | Our main Expanse CLI client. It is the entry point into the Expanse network (main-, test- or private net), capable of running as a full node (default), archive node (retaining all historical state) or a light node (retrieving data live). It can be used by other processes as a gateway into the Expanse network via JSON RPC endpoints exposed on top of HTTP, WebSocket and/or IPC transports. `gexp --help` and the [CLI Wiki page](https://github.com/expanse-org/go-expanse/wiki/Command-Line-Options) for command line options.          |
+|   `abigen`    | Source code generator to convert Expanse contract definitions into easy to use, compile-time type-safe Go packages. It operates on plain [Expanse contract ABIs](https://github.com/expanse/wiki/wiki/Expanse-Contract-ABI) with expanded functionality if the contract bytecode is also available. However, it also accepts Solidity source files, making development much more streamlined. Please see our [Native DApps](https://github.com/expanse-org/go-expanse/wiki/Native-DApps:-Go-bindings-to-Expanse-contracts) wiki page for details. |
+|  `bootnode`   | Stripped down version of our Expanse client implementation that only takes part in the network node discovery protocol, but does not run any of the higher level application protocols. It can be used as a lightweight bootstrap node to aid in finding peers in private networks.                                                                                                                                                                                                                                                                 |
+|     `evm`     | Developer utility version of the EVM (Expanse Virtual Machine) that is capable of running bytecode snippets within a configurable environment and execution mode. Its purpose is to allow isolated, fine-grained debugging of EVM opcodes (e.g. `evm --code 60ff60ff --debug run`).                                                                                                                                                                                                                                                                     |
+| `gexprpctest` | Developer utility tool to support our [expanse/rpc-test](https://github.com/expanse/rpc-tests) test suite which validates baseline conformity to the [Expanse JSON RPC](https://github.com/expanse/wiki/wiki/JSON-RPC) specs. Please see the [test suite's readme](https://github.com/expanse/rpc-tests/blob/master/README.md) for details.                                                                                                                                                                                                     |
+|   `rlpdump`   | Developer utility tool to convert binary RLP ([Recursive Length Prefix](https://github.com/expanse/wiki/wiki/RLP)) dumps (data encoding used by the Expanse protocol both network as well as consensus wise) to user-friendlier hierarchical representation (e.g. `rlpdump --hex CE0183FFFFFFC4C304050583616263`).                                                                                                                                                                                                                                 |
+|   `puppeth`   | a CLI wizard that aids in creating a new Expanse network.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 
 ## Running gexp
 
@@ -64,33 +62,42 @@ $ gexp --fast --cache=512 console
 ```
 
 This command will:
-
- * Start gexp in fast sync mode (default, can be changed with the `--syncmode` flag), causing it to
-   download more data in exchange for avoiding processing the entire history of the Expanse network,
-   which is very CPU intensive.
- * Start up gexp's built-in interactive [JavaScript console](https://github.com/expanse-org/go-expanse/wiki/JavaScript-Console),
+ * Start `gexp` in fast sync mode (default, can be changed with the `--syncmode` flag),
+   causing it to download more data in exchange for avoiding processing the entire history
+   of the Expanse network, which is very CPU intensive.
+ * Start up `gexp`'s built-in interactive [JavaScript console](https://github.com/expanse-org/go-expanse/wiki/JavaScript-Console),
    (via the trailing `console` subcommand) through which you can invoke all official [`web3` methods](https://github.com/ethereum/wiki/wiki/JavaScript-API)
-   as well as Gexp's own [management APIs](https://github.com/expanse-org/go-expanse/wiki/Management-APIs).
-   This tool is optional and if you leave it out you can always attach to an already running Gexp instance
-   with `gexp attach`.
+   as well as `gexp`'s own [management APIs](https://github.com/expanse-org/go-expanse/wiki/Management-APIs).
+   This tool is optional and if you leave it out you can always attach to an already running
+   `geth` instance with `geth attach`.
 
-### Full node on the Expanse test network
+### A Full node on the Görli test network
 
-Transitioning towards developers, if you'd like to play around with creating Expanse contracts, you
-almost certainly would like to do that without any real money involved until you get the hang of the
-entire system. In other words, instead of attaching to the main network, you want to join the **test**
-network with your node, which is fully equivalent to the main network, but with play-Ether only.
+Transitioning towards developers, if you'd like to play around with creating Ethereum
+contracts, you almost certainly would like to do that without any real money involved until
+you get the hang of the entire system. In other words, instead of attaching to the main
+network, you want to join the **test** network with your node, which is fully equivalent to
+the main network, but with play-Ether only.
 
-```
-$ gexp --testnet --fast --cache=512 console
+```shell
+$ gexp --goerli console
 ```
 
 The `console` subcommand has the exact same meaning as above and they are equally
-useful on the testnet too. Please see above for their explanations if you've skipped here.
+useful on the testnet too. Please, see above for their explanations if you've skipped here.
 
-Specifying the `--testnet` flag, however, will reconfigure your `geth` instance a bit:
+Specifying the `--goerli` flag, however, will reconfigure your `gexp` instance a bit:
 
-Specifying the `--testnet` flag however will reconfigure your Gexp instance a bit:
+ * Instead of connecting the main Expanse network, the client will connect to the Görli
+   test network, which uses different P2P bootnodes, different network IDs and genesis
+   states.
+ * Instead of using the default data directory (`~/.expanse` on Linux for example), `gexp`
+   will nest itself one level deeper into a `goerli` subfolder (`~/.expanse/goerli` on
+   Linux). Note, on OSX and Linux this also means that attaching to a running testnet node
+   requires the use of a custom endpoint since `gexp attach` will try to attach to a
+   production node endpoint by default, e.g.,
+   `gexp attach <datadir>/goerli/gexp.ipc`. Windows users are not affected by
+   this.
 
  * Instead of using the default data directory (`~/.expanse` on Linux for example), Gexp will nest
    itself one level deeper into a `testnet` subfolder (`~/.expanse/testnet` on Linux). Note, on OSX
@@ -107,11 +114,25 @@ separate the two networks and will not make any accounts available between them.
 
 ### Full node on the Rinkeby test network
 
-The above test network is a cross client one based on the ethash proof-of-work consensus algorithm. As such, it has certain extra overhead and is more susceptible to reorganization attacks due to the network's low difficulty / security. Go Expanse also supports connecting to a proof-of-authority based test network called [*Rinkeby*](https://www.rinkeby.io) (operated by members of the community). This network is lighter, more secure, but is only supported by go-ethereum.
+Go Expanse also supports connecting to the older proof-of-authority based test network
+called [*Rinkeby*](https://www.rinkeby.io) which is operated by members of the community.
 
 ```
 $ gexp --rinkeby console
 ```
+
+### Full node on the Ropsten test network
+
+In addition to Görli and Rinkeby, Geth also supports the ancient Ropsten testnet. The
+Ropsten test network is based on the Ethash proof-of-work consensus algorithm. As such,
+it has certain extra overhead and is more susceptible to reorganization attacks due to the
+network's low difficulty/security.
+
+```shell
+$ geth --ropsten console
+```
+
+*Note: Older Geth configurations store the Ropsten database in the `testnet` subdirectory.*
 
 ### Configuration
 
@@ -142,7 +163,9 @@ docker run -d --name expanse-node -v /Users/alice/expanse:/root \
 
 This will start gexp in fast sync mode with a DB memory allowance of 512MB just as the above command does.  It will also create a persistent volume in your home directory for saving your blockchain as well as map the default ports. There is also an `alpine` tag available for a slim version of the image.
 
-### Pragmatically interfacing Gexp nodes
+Do not forget `--http.addr 0.0.0.0`, if you want to access RPC from other containers
+and/or hosts. By default, `gexp` binds to the local interface and RPC endpoints is not
+accessible from the outside.
 
 As a developer, sooner rather than later you'll want to start interacting with Gexp and the Expanse
 network via your own programs and not manually through the console. To aid this, Gexp has built in
@@ -157,16 +180,16 @@ These can be turned on/off and configured as you'd expect.
 
 HTTP based JSON-RPC API options:
 
-  * `--rpc` Enable the HTTP-RPC server
-  * `--rpcaddr` HTTP-RPC server listening interface (default: "localhost")
-  * `--rpcport` HTTP-RPC server listening port (default: 9656)
-  * `--rpcapi` API's offered over the HTTP-RPC interface (default: "eth,net,web3")
-  * `--rpccorsdomain` Comma separated list of domains from which to accept cross origin requests (browser enforced)
+  * `--http` Enable the HTTP-RPC server
+  * `--http.addr` HTTP-RPC server listening interface (default: `localhost`)
+  * `--http.port` HTTP-RPC server listening port (default: `8545`)
+  * `--http.api` API's offered over the HTTP-RPC interface (default: `eth,net,web3`)
+  * `--http.corsdomain` Comma separated list of domains from which to accept cross origin requests (browser enforced)
   * `--ws` Enable the WS-RPC server
-  * `--wsaddr` WS-RPC server listening interface (default: `localhost`)
-  * `--wsport` WS-RPC server listening port (default: `8546`)
-  * `--wsapi` API's offered over the WS-RPC interface (default: `eth,net,web3`)
-  * `--wsorigins` Origins from which to accept websockets requests
+  * `--ws.addr` WS-RPC server listening interface (default: `localhost`)
+  * `--ws.port` WS-RPC server listening port (default: `8546`)
+  * `--ws.api` API's offered over the WS-RPC interface (default: `eth,net,web3`)
+  * `--ws.origins` Origins from which to accept websockets requests
   * `--ipcdisable` Disable the IPC-RPC server
   * `--ipcapi` API's offered over the IPC-RPC interface (default: `admin,debug,eth,miner,net,personal,shh,txpool,web3`)
   * `--ipcpath` Filename for IPC socket/pipe within the datadir (explicit paths escape it)
@@ -200,7 +223,8 @@ aware of and agree upon. This consists of a small JSON file (e.g. call it `genes
     "eip158Block": 0,
     "byzantiumBlock": 0,
     "constantinopleBlock": 0,
-    "petersburgBlock": 0
+    "petersburgBlock": 0,
+    "istanbulBlock": 0
   },
   "alloc": {},
   "coinbase": "0x0000000000000000000000000000000000000000",

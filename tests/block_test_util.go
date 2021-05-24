@@ -32,6 +32,7 @@ import (
 	"github.com/expanse-org/go-expanse/core"
 	"github.com/expanse-org/go-expanse/core/rawdb"
 	"github.com/expanse-org/go-expanse/core/state"
+	"github.com/expanse-org/go-expanse/core/state/snapshot"
 	"github.com/expanse-org/go-expanse/core/types"
 	"github.com/expanse-org/go-expanse/core/vm"
 	"github.com/expanse-org/go-expanse/params"
@@ -94,7 +95,7 @@ type btHeaderMarshaling struct {
 	Timestamp  math.HexOrDecimal64
 }
 
-func (t *BlockTest) Run() error {
+func (t *BlockTest) Run(snapshotter bool) error {
 	config, ok := Forks[t.json.Network]
 	if !ok {
 		return UnsupportedForkError{t.json.Network}
@@ -118,7 +119,12 @@ func (t *BlockTest) Run() error {
 	} else {
 		engine = ethash.NewShared()
 	}
-	chain, err := core.NewBlockChain(db, &core.CacheConfig{TrieCleanLimit: 0}, config, engine, vm.Config{}, nil)
+	cache := &core.CacheConfig{TrieCleanLimit: 0}
+	if snapshotter {
+		cache.SnapshotLimit = 1
+		cache.SnapshotWait = true
+	}
+	chain, err := core.NewBlockChain(db, cache, config, engine, vm.Config{}, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -138,6 +144,12 @@ func (t *BlockTest) Run() error {
 	}
 	if err = t.validatePostState(newDB); err != nil {
 		return fmt.Errorf("post state validation failed: %v", err)
+	}
+	// Cross-check the snapshot-to-hash against the trie hash
+	if snapshotter {
+		if err := snapshot.VerifyState(chain.Snapshot(), chain.CurrentBlock().Root()); err != nil {
+			return err
+		}
 	}
 	return t.validateImportedHeaders(chain, validBlocks)
 }

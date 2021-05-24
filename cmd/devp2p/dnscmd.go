@@ -27,7 +27,7 @@ import (
 
 	"github.com/expanse-org/go-expanse/accounts/keystore"
 	"github.com/expanse-org/go-expanse/common"
-	"github.com/expanse-org/go-expanse/console"
+	"github.com/expanse-org/go-expanse/console/prompt"
 	"github.com/expanse-org/go-expanse/p2p/dnsdisc"
 	"github.com/expanse-org/go-expanse/p2p/enode"
 	cli "gopkg.in/urfave/cli.v1"
@@ -97,8 +97,8 @@ var (
 )
 
 const (
-	rootTTL     = 1
-	treeNodeTTL = 2147483647
+	rootTTL     = 30 * 60              // 30 min
+	treeNodeTTL = 4 * 7 * 24 * 60 * 60 // 4 weeks
 )
 
 // dnsSync performs dnsSyncCommand.
@@ -226,7 +226,7 @@ func loadSigningKey(keyfile string) *ecdsa.PrivateKey {
 	if err != nil {
 		exit(fmt.Errorf("failed to read the keyfile at '%s': %v", keyfile, err))
 	}
-	password, _ := console.Stdin.PromptPassword("Please enter the password for '" + keyfile + "': ")
+	password, _ := prompt.Stdin.PromptPassword("Please enter the password for '" + keyfile + "': ")
 	key, err := keystore.DecryptKey(keyjson, password)
 	if err != nil {
 		exit(fmt.Errorf("error decrypting key: %v", err))

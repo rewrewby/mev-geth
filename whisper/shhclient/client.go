@@ -19,7 +19,7 @@ package shhclient
 import (
 	"context"
 
-	"github.com/expanse-org/go-expanse"
+	ethereum "github.com/expanse-org/go-expanse"
 	"github.com/expanse-org/go-expanse/common/hexutil"
 	"github.com/expanse-org/go-expanse/rpc"
 	whisper "github.com/expanse-org/go-expanse/whisper/whisperv6"

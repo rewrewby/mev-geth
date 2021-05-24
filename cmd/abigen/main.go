@@ -30,6 +30,7 @@ import (
 	"github.com/expanse-org/go-expanse/cmd/utils"
 	"github.com/expanse-org/go-expanse/common/compiler"
 	"github.com/expanse-org/go-expanse/crypto"
+	"github.com/expanse-org/go-expanse/internal/flags"
 	"github.com/expanse-org/go-expanse/log"
 	"gopkg.in/urfave/cli.v1"
 )
@@ -100,7 +101,7 @@ var (
 )
 
 func init() {
-	app = utils.NewApp(gitCommit, gitDate, "expanse checkpoint helper tool")
+	app = flags.NewApp(gitCommit, gitDate, "expanse checkpoint helper tool")
 	app.Flags = []cli.Flag{
 		abiFlag,
 		binFlag,
@@ -117,7 +118,7 @@ func init() {
 		aliasFlag,
 	}
 	app.Action = utils.MigrateFlags(abigen)
-	cli.CommandHelpTemplate = utils.OriginCommandHelpTemplate
+	cli.CommandHelpTemplate = flags.OriginCommandHelpTemplate
 }
 
 func abigen(c *cli.Context) error {
