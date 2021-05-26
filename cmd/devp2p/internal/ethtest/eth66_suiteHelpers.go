@@ -46,7 +46,7 @@ func (s *Suite) dial66(t *utesting.T) *Conn {
 	if err != nil {
 		t.Fatalf("could not dial: %v", err)
 	}
-	conn.caps = append(conn.caps, p2p.Cap{Name: "eth", Version: 66})
+	conn.caps = append(conn.caps, p2p.Cap{Name: "exp", Version: 66})
 	conn.ourHighestProtoVersion = 66
 	return conn
 }

@@ -246,27 +246,27 @@ func (s *Suite) TestMaliciousHandshake_66(t *utesting.T) {
 		{
 			Version: 5,
 			Caps: []p2p.Cap{
-				{Name: "eth", Version: 64},
-				{Name: "eth", Version: 65},
-				{Name: "eth", Version: 66},
+				{Name: "exp", Version: 64},
+				{Name: "exp", Version: 65},
+				{Name: "exp", Version: 66},
 			},
 			ID: append(pub0, byte(0)),
 		},
 		{
 			Version: 5,
 			Caps: []p2p.Cap{
-				{Name: "eth", Version: 64},
-				{Name: "eth", Version: 65},
-				{Name: "eth", Version: 66},
+				{Name: "exp", Version: 64},
+				{Name: "exp", Version: 65},
+				{Name: "exp", Version: 66},
 			},
 			ID: append(pub0, pub0...),
 		},
 		{
 			Version: 5,
 			Caps: []p2p.Cap{
-				{Name: "eth", Version: 64},
-				{Name: "eth", Version: 65},
-				{Name: "eth", Version: 66},
+				{Name: "exp", Version: 64},
+				{Name: "exp", Version: 65},
+				{Name: "exp", Version: 66},
 			},
 			ID: largeBuffer(2),
 		},

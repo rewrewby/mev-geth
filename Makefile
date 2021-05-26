@@ -17,6 +17,21 @@ gexp:
 	@echo "Done building."
 	@echo "Run \"$(GOBIN)/gexp\" to launch gexp."
 
+devp2p:
+	$(GORUN) build/ci.go install ./cmd/devp2p
+	@echo "Done building."
+	@echo "Run \"$(GOBIN)/devp2p\" to launch devp2p."
+
+ethkey:
+	$(GORUN) build/ci.go install ./cmd/ethkey
+	@echo "Done building."
+	@echo "Run \"$(GOBIN)/ethkey\" to launch ethkey."
+
+bootnode:
+	$(GORUN) build/ci.go install ./cmd/bootnode
+	@echo "Done building."
+	@echo "Run \"$(GOBIN)/bootnode\" to launch bootnode."
+
 all:
 	$(GORUN) build/ci.go install
 
