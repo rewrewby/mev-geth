@@ -74,6 +74,15 @@ func (api *API) SubmitWork(nonce types.BlockNonce, hash, digest common.Hash, ext
 		return false
 	}
 
+	var extraNonce []byte
+	if extraNonceStr != nil {
+		var err error
+		extraNonce, err = hexutil.Decode(*extraNonceStr)
+		if err != nil {
+			return false
+		}
+	}
+
 	var errc = make(chan error, 1)
 	select {
 	case api.ethash.remote.submitWorkCh <- &mineResult{

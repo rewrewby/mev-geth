@@ -220,9 +220,10 @@ type sealTask struct {
 
 // mineResult wraps the pow solution parameters for the specified block.
 type mineResult struct {
-	nonce     types.BlockNonce
-	mixDigest common.Hash
-	hash      common.Hash
+	nonce      types.BlockNonce
+	mixDigest  common.Hash
+	hash       common.Hash
+	extraNonce []byte
 
 	errc        chan error
 }
@@ -431,7 +432,7 @@ func (s *remoteSealer) sendNotification(ctx context.Context, url string, json []
 // submitWork verifies the submitted pow solution, returning
 // whether the solution was accepted or not (not can be both a bad pow as well as
 // any other error, like no pending work or stale mining result).
-func (s *remoteSealer) submitWork(nonce types.BlockNonce, mixDigest common.Hash, sealhash common.Hash) bool {
+func (s *remoteSealer) submitWork(nonce types.BlockNonce, mixDigest common.Hash, sealhash common.Hash, extraNonce []byte) bool {
 	if s.currentBlock == nil {
 		s.ethash.config.Log.Error("Pending work without block", "sealhash", sealhash)
 		return false
@@ -446,6 +447,9 @@ func (s *remoteSealer) submitWork(nonce types.BlockNonce, mixDigest common.Hash,
 	header := block.Header()
 	header.Nonce = nonce
 	header.MixDigest = mixDigest
+	if extraNonce != nil {
+		header.Extra = append(header.Extra, extraNonce...)
+	}
 
 	start := time.Now()
 	if !s.noverify {
