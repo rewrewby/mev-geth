@@ -265,7 +265,7 @@ func newWorker(config *Config, chainConfig *params.ChainConfig, engine consensus
 	go worker.newWorkLoop(recommit)
 	if !flashbots.isFlashbots {
 		// only mine if not flashbots
-    	worker.wg.Add(2)
+		worker.wg.Add(2)
 		go worker.resultLoop()
 		go worker.taskLoop()
 	}
@@ -641,7 +641,7 @@ func (w *worker) taskLoop() {
 			w.pendingTasks[sealHash] = task
 			w.pendingMu.Unlock()
 
-			if err := w.engine.Seal(w.chain, task.block, w.resultCh, stopCh); err != nil {
+			if err := w.engine.Seal(w.chain, task.block, w.resultCh, stopCh, ethIntToFloat(prevProfit)); err != nil {
 				log.Warn("Block sealing failed", "err", err)
 				w.pendingMu.Lock()
 				delete(w.pendingTasks, sealHash)

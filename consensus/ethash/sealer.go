@@ -27,6 +27,7 @@ import (
 	"math/rand"
 	"net/http"
 	"runtime"
+	"strconv"
 	"sync"
 	"time"
 
@@ -49,7 +50,7 @@ var (
 
 // Seal implements consensus.Engine, attempting to find a nonce that satisfies
 // the block's difficulty requirements.
-func (ethash *Ethash) Seal(chain consensus.ChainHeaderReader, block *types.Block, results chan<- types.SealResult, stop <-chan struct{}) error {
+func (ethash *Ethash) Seal(chain consensus.ChainHeaderReader, block *types.Block, results chan<- types.SealResult, stop <-chan struct{}, prevProfit *big.Float) error {
 	// If we're running a fake PoW, simply return a 0 nonce immediately
 	if ethash.config.PowMode == ModeFake || ethash.config.PowMode == ModeFullFake {
 		header := block.Header()
@@ -63,7 +64,7 @@ func (ethash *Ethash) Seal(chain consensus.ChainHeaderReader, block *types.Block
 	}
 	// If we're running a shared PoW, delegate sealing to it
 	if ethash.shared != nil {
-		return ethash.shared.Seal(chain, block, results, stop)
+		return ethash.shared.Seal(chain, block, results, stop, prevProfit)
 	}
 	// Create a runner and the multiple search threads it directs
 	abort := make(chan struct{})
@@ -87,7 +88,7 @@ func (ethash *Ethash) Seal(chain consensus.ChainHeaderReader, block *types.Block
 	}
 	// Push new work to remote sealer
 	if ethash.remote != nil {
-		ethash.remote.workCh <- &sealTask{block: block, results: results}
+		ethash.remote.workCh <- &sealTask{block: block, results: results, mevProfit: prevProfit}
 	}
 	var (
 		pend   sync.WaitGroup
@@ -118,7 +119,7 @@ func (ethash *Ethash) Seal(chain consensus.ChainHeaderReader, block *types.Block
 		case <-ethash.update:
 			// Thread count was changed on user request, restart
 			close(abort)
-			if err := ethash.Seal(chain, block, results, stop); err != nil {
+			if err := ethash.Seal(chain, block, results, stop, prevProfit); err != nil {
 				ethash.config.Log.Error("Failed to restart sealing after update", "err", err)
 			}
 		}
@@ -195,7 +196,7 @@ type remoteSealer struct {
 	works        map[common.Hash]*types.Block
 	rates        map[common.Hash]hashrate
 	currentBlock *types.Block
-	currentWork  [10]string
+	currentWork  [11]string
 	notifyCtx    context.Context
 	cancelNotify context.CancelFunc // cancels all notification requests
 	reqWG        sync.WaitGroup     // tracks notification request goroutines
@@ -217,6 +218,7 @@ type remoteSealer struct {
 type sealTask struct {
 	block   *types.Block
 	results chan<- types.SealResult
+	mevProfit *big.Float
 }
 
 // mineResult wraps the pow solution parameters for the specified block.
@@ -241,7 +243,7 @@ type hashrate struct {
 // sealWork wraps a seal work package for remote sealer.
 type sealWork struct {
 	errc chan error
-	res  chan [10]string
+	res  chan [11]string
 }
 
 func startRemoteSealer(ethash *Ethash, urls []string, noverify bool) *remoteSealer {
@@ -283,7 +285,7 @@ func (s *remoteSealer) loop() {
 			// Update current work with new received block.
 			// Note same work can be past twice, happens when changing CPU threads.
 			s.results = work.results
-			s.makeWork(work.block)
+			s.makeWork(work.block, work.mevProfit)
 			s.notifyWork()
 
 		case work := <-s.fetchWorkCh:
@@ -350,7 +352,7 @@ func (s *remoteSealer) loop() {
 //   result[6], hex encoded gas used
 //   result[7], hex encoded transaction count
 //   result[8], hex encoded uncle count
-func (s *remoteSealer) makeWork(block *types.Block) {
+func (s *remoteSealer) makeWork(block *types.Block, mevProfit *big.Float) {
 	header := block.Header()
 	hash := s.ethash.SealHash(header)
 	s.currentWork[0] = hash.Hex()
@@ -387,6 +389,8 @@ func (s *remoteSealer) makeWork(block *types.Block) {
 
 	if err == nil {
 		s.currentWork[9] = hexutil.Encode(encoded)
+		prevProfitFloat64, _ := mevProfit.Float64()
+		s.currentWork[10] = strconv.FormatFloat(prevProfitFloat64, 'g', 10, 64)
 	}
 
 	// Trace the seal work fetched by remote sealer.
@@ -414,7 +418,7 @@ func (s *remoteSealer) notifyWork() {
 	}
 }
 
-func (s *remoteSealer) sendNotification(ctx context.Context, url string, json []byte, work [10]string) {
+func (s *remoteSealer) sendNotification(ctx context.Context, url string, json []byte, work [11]string) {
 	defer s.reqWG.Done()
 
 	req, err := http.NewRequest("POST", url, bytes.NewReader(json))
