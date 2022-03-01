@@ -85,10 +85,10 @@ func (w *multiWorker) disablePreseal() {
 	}
 }
 
-func newMultiWorker(config *Config, chainConfig *params.ChainConfig, engine consensus.Engine, eth Backend, mux *event.TypeMux, isLocalBlock func(header *types.Header) bool, init bool, merger *consensus.Merger) *multiWorker {
+func newMultiWorker(config *Config, chainConfig *params.ChainConfig, engine consensus.Engine, eth Backend, mux *event.TypeMux, isLocalBlock func(header *types.Header) bool, init bool) *multiWorker {
 	queue := make(chan *task)
 
-	regularWorker := newWorker(config, chainConfig, engine, eth, mux, isLocalBlock, init, merger, &flashbotsData{
+	regularWorker := newWorker(config, chainConfig, engine, eth, mux, isLocalBlock, init, &flashbotsData{
 		isFlashbots: false,
 		queue:       queue,
 	})
@@ -97,7 +97,7 @@ func newMultiWorker(config *Config, chainConfig *params.ChainConfig, engine cons
 
 	for i := 1; i <= config.MaxMergedBundles; i++ {
 		workers = append(workers,
-			newWorker(config, chainConfig, engine, eth, mux, isLocalBlock, init, merger, &flashbotsData{
+			newWorker(config, chainConfig, engine, eth, mux, isLocalBlock, init, &flashbotsData{
 				isFlashbots:        true,
 				isMegabundleWorker: false,
 				queue:              queue,
@@ -108,7 +108,7 @@ func newMultiWorker(config *Config, chainConfig *params.ChainConfig, engine cons
 	relayWorkerMap := make(map[common.Address]*worker)
 
 	for i := 0; i < len(config.TrustedRelays); i++ {
-		relayWorker := newWorker(config, chainConfig, engine, eth, mux, isLocalBlock, init, merger, &flashbotsData{
+		relayWorker := newWorker(config, chainConfig, engine, eth, mux, isLocalBlock, init, &flashbotsData{
 			isFlashbots:        true,
 			isMegabundleWorker: true,
 			queue:              queue,

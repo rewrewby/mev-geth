@@ -72,6 +72,10 @@ type txPool interface {
 	// SubscribeNewTxsEvent should return an event subscription of
 	// NewTxsEvent and send events to the given channel.
 	SubscribeNewTxsEvent(chan<- core.NewTxsEvent) event.Subscription
+
+	// IsPrivateTxHash indicates if the transaction hash should not
+	// be broadcast on public channels
+	IsPrivateTxHash(hash common.Hash) bool
 }
 
 // handlerConfig is the collection of initialization parameters to create a full
@@ -433,7 +437,7 @@ func (h *handler) runEthPeer(peer *eth.Peer, handler eth.Handler) error {
 					return
 				}
 				peer.Log().Debug("Whitelist block verified", "number", number, "hash", hash)
-
+				res.Done <- nil
 			case <-timeout.C:
 				peer.Log().Warn("Whitelist challenge timed out, dropping", "addr", peer.RemoteAddr(), "type", peer.Name())
 				h.removePeer(peer.ID())
