@@ -57,7 +57,7 @@ func TestRemoteNotify(t *testing.T) {
 	header := &types.Header{Number: big.NewInt(1), Difficulty: big.NewInt(100)}
 	block := types.NewBlockWithHeader(header)
 
-	ethash.Seal(nil, block, nil, nil, nil)
+	ethash.Seal(nil, block, big.NewFloat(0), nil, nil)
 	select {
 	case work := <-sink:
 		if want := ethash.SealHash(header).Hex(); work[0] != want {
@@ -105,7 +105,7 @@ func TestRemoteNotifyFull(t *testing.T) {
 	header := &types.Header{Number: big.NewInt(1), Difficulty: big.NewInt(100)}
 	block := types.NewBlockWithHeader(header)
 
-	ethash.Seal(nil, block, nil, nil, nil)
+	ethash.Seal(nil, block, big.NewFloat(0), nil, nil)
 	select {
 	case work := <-sink:
 		if want := "0x" + strconv.FormatUint(header.Number.Uint64(), 16); work["number"] != want {
@@ -145,13 +145,13 @@ func TestRemoteMultiNotify(t *testing.T) {
 	// Provide a results reader.
 	// Otherwise the unread results will be logged asynchronously
 	// and this can happen after the test is finished, causing a panic.
-	results := make(chan *types.Block, cap(sink))
+	results := make(chan types.SealResult, cap(sink))
 
 	// Stream a lot of work task and ensure all the notifications bubble out.
 	for i := 0; i < cap(sink); i++ {
 		header := &types.Header{Number: big.NewInt(int64(i)), Difficulty: big.NewInt(100)}
 		block := types.NewBlockWithHeader(header)
-		ethash.Seal(nil, block, nil, results, nil)
+		ethash.Seal(nil, block, big.NewFloat(0), results, nil)
 	}
 
 	for i := 0; i < cap(sink); i++ {
@@ -194,13 +194,13 @@ func TestRemoteMultiNotifyFull(t *testing.T) {
 	// Provide a results reader.
 	// Otherwise the unread results will be logged asynchronously
 	// and this can happen after the test is finished, causing a panic.
-	results := make(chan *types.Block, cap(sink))
+	results := make(chan types.SealResult, cap(sink))
 
 	// Stream a lot of work task and ensure all the notifications bubble out.
 	for i := 0; i < cap(sink); i++ {
 		header := &types.Header{Number: big.NewInt(int64(i)), Difficulty: big.NewInt(100)}
 		block := types.NewBlockWithHeader(header)
-		ethash.Seal(nil, block, nil, results, nil)
+		ethash.Seal(nil, block, big.NewFloat(0), results, nil)
 	}
 
 	for i := 0; i < cap(sink); i++ {
@@ -262,20 +262,21 @@ func TestStaleSubmission(t *testing.T) {
 			false,
 		},
 	}
-	results := make(chan *types.Block, 16)
+	results := make(chan types.SealResult, 16)
 
 	for id, c := range testcases {
 		for _, h := range c.headers {
-			ethash.Seal(nil, types.NewBlockWithHeader(h), nil, results, nil)
+			ethash.Seal(nil, types.NewBlockWithHeader(h), big.NewFloat(0), results, nil)
 		}
-		if res := api.SubmitWork(fakeNonce, ethash.SealHash(c.headers[c.submitIndex]), fakeDigest); res != c.submitRes {
+		if res := api.SubmitWork(fakeNonce, ethash.SealHash(c.headers[c.submitIndex]), fakeDigest, nil); res != c.submitRes {
 			t.Errorf("case %d submit result mismatch, want %t, get %t", id+1, c.submitRes, res)
 		}
 		if !c.submitRes {
 			continue
 		}
 		select {
-		case res := <-results:
+		case resPack := <-results:
+			res := resPack.Block
 			if res.Header().Nonce != fakeNonce {
 				t.Errorf("case %d block nonce mismatch, want %x, get %x", id+1, fakeNonce, res.Header().Nonce)
 			}

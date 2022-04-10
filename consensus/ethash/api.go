@@ -38,37 +38,53 @@ type API struct {
 //   result[1] - 32 bytes hex encoded seed hash used for DAG
 //   result[2] - 32 bytes hex encoded boundary condition ("target"), 2^256/difficulty
 //   result[3] - hex encoded block number
-func (api *API) GetWork() ([4]string, error) {
+//   result[4], 32 bytes hex encoded parent block header pow-hash
+//   result[5], hex encoded gas limit
+//   result[6], hex encoded gas used
+//   result[7], hex encoded transaction count
+//   result[8], hex encoded uncle count
+//   result[9], RLP encoded header with additonal empty extra data bytes
+//   result[10], MEV Profit as float-to-string "0.124"
+func (api *API) GetWork() ([11]string, error) {
 	if api.ethash.remote == nil {
-		return [4]string{}, errors.New("not supported")
+		return [11]string{}, errors.New("not supported")
 	}
 
 	var (
-		workCh = make(chan [5]string, 1)
+		workCh = make(chan [11]string, 1)
 		errc   = make(chan error, 1)
 	)
 	select {
 	case api.ethash.remote.fetchWorkCh <- &sealWork{errc: errc, res: workCh}:
 	case <-api.ethash.remote.exitCh:
-		return [4]string{}, errEthashStopped
+		return [11]string{}, errEthashStopped
 	}
 	select {
 	case fullWork := <-workCh:
-		var work [4]string
+		var work [11]string
 		copy(work[:], fullWork[:4])
 
 		return work, nil
 	case err := <-errc:
-		return [4]string{}, err
+		return [11]string{}, err
 	}
 }
 
 // SubmitWork can be used by external miner to submit their POW solution.
 // It returns an indication if the work was accepted.
 // Note either an invalid solution, a stale work a non-existent work will return false.
-func (api *API) SubmitWork(nonce types.BlockNonce, hash, digest common.Hash) bool {
+func (api *API) SubmitWork(nonce types.BlockNonce, hash, digest common.Hash, extraNonceStr *string) bool {
 	if api.ethash.remote == nil {
 		return false
+	}
+
+	var extraNonce []byte
+	if extraNonceStr != nil {
+		var err error
+		extraNonce, err = hexutil.Decode(*extraNonceStr)
+		if err != nil {
+			return false
+		}
 	}
 
 	var errc = make(chan error, 1)
@@ -77,6 +93,7 @@ func (api *API) SubmitWork(nonce types.BlockNonce, hash, digest common.Hash) boo
 		nonce:     nonce,
 		mixDigest: digest,
 		hash:      hash,
+		extraNonce: extraNonce,
 		errc:      errc,
 	}:
 	case <-api.ethash.remote.exitCh:
