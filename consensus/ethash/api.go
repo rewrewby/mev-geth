@@ -62,7 +62,7 @@ func (api *API) GetWork() ([11]string, error) {
 	select {
 	case fullWork := <-workCh:
 		var work [11]string
-		copy(work[:], fullWork[:4])
+		copy(work[:], fullWork[:11])
 
 		return work, nil
 	case err := <-errc:
